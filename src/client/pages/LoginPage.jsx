@@ -16,7 +16,7 @@ const LoginPage = () => {
             if (!loginSuccess) {
                 setError('Đăng nhập thất bại. Vui lòng thử lại.');
             }else{
-                navigate('/');
+                navigate('/sugernest/');
             }
         } catch (error) {
             console.error('Login failed:', error);
