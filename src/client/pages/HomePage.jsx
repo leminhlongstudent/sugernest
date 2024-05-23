@@ -41,7 +41,7 @@ const HomePage = () => {
   };
   const navigator = useNavigate();
   function getListProduct() {
-    navigator(`/sugernest/products`)
+    navigator(`/products`)
   }
   return (
     <div>

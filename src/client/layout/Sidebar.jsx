@@ -16,7 +16,7 @@ const Sidebar = () => {
     })
   }, [])
   function getListProduct() {
-    navigator(`/sugernest/products`)
+    navigator(`/products`)
   }
   return (
     <div>

@@ -7,7 +7,7 @@ const AddToCartSuccess = ({ handleClose, product, cartItem }) => {
     const navigate = useNavigate();
 
     function getMyCart() {
-        navigate('/sugernest/cart');
+        navigate('/cart');
     }
 
     useEffect(() => {

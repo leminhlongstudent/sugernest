@@ -37,7 +37,7 @@ const AddtoCart = ({ product }) => {
     const [cartItem, setCartItem] = useState();
     const handleSubmit = (event) => {
         if (!user) {
-            navigate('/sugernest/login');
+            navigate('/login');
         } else {
             event.preventDefault();
             const cartItem = {
