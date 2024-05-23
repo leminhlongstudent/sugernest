@@ -12,13 +12,13 @@ const CartPage = () => {
    const { updateCart } = useCart();
    const navigate = useNavigate();
    function getProduct(id) {
-      navigate(`/products/${id}`);
+      navigate(`/sugernest/products/${id}`);
    }
    function getLoginPage() {
-      navigate('/login');
+      navigate('/sugernest/login');
    }
    function getHomePage() {
-      navigate('/');
+      navigate('/sugernest/');
    }
 
    useEffect(() => {

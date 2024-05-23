@@ -13,7 +13,7 @@ const ItemProductComponent = ({ product }) => {
         openModal();
     };
     function getProduct(id) {
-        navigator(`/products/${id}`)
+        navigator(`/sugernest/products/${id}`)
     }
     const openModal = () => {
         setIsModalOpen(true);

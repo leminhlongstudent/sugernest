@@ -59,20 +59,20 @@ const Header = () => {
       });
   };
   function getHomePage() {
-    navigator(`/`);
+    navigator(`/sugernest/`);
   }
   function getCart() {
-    navigator(`/cart`);
+    navigator(`/sugernest/cart`);
   }
   const handleClick = () => {
     if (user) {
-      navigator(`/profile/${user.id}`);
+      navigator(`/sugernest/profile/${user.id}`);
     } else {
-      navigator(`/login`);
+      navigator(`/sugernest/login`);
     }
   };
   function getProduct(id) {
-    navigator(`/products/${id}`);
+    navigator(`/sugernest/products/${id}`);
   }
 
   return (
