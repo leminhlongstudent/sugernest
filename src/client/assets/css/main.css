@@ -533,6 +533,9 @@ a.link:hover {
 		left: auto;
 		right: -10px;
 	}
+	.slick-list{
+		display: none;
+	}
 }
 /**search bar header **/
 #search-header .custom-input-group {

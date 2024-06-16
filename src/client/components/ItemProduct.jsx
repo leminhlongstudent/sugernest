@@ -1,7 +1,8 @@
 import React from 'react'
-import { useEffect, useState, useRef } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useState, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import ProductSlider from './ProductSlider.jsx';
+import { IMAGE_BASE_URL } from '../services/ProductService.js';
 
 const ItemProductComponent = ({ product }) => {
     const modalRef = useRef(null);
@@ -13,7 +14,7 @@ const ItemProductComponent = ({ product }) => {
         openModal();
     };
     function getProduct(id) {
-        navigator(`/products/${id}`)
+        navigator(`/product/${id}`)
     }
     const openModal = () => {
         setIsModalOpen(true);
@@ -22,6 +23,9 @@ const ItemProductComponent = ({ product }) => {
     const closeModal = () => {
         setIsModalOpen(false);
     };
+    const minPrice = Math.min(...product.sizeColorProductsEntity.map(item => item.listPrice));
+    const minDiscountPrice = Math.min(...product.sizeColorProductsEntity.map(item => item.discountPrice));
+    const minDiscount = Math.min(...product.sizeColorProductsEntity.map(item => item.discount));
     return (
         <div className="col-6  col-sm-3  col-md-3 col-lg-3  product-col">
             {
@@ -35,22 +39,21 @@ const ItemProductComponent = ({ product }) => {
                                 <img loading="lazy"
                                     className='product-thumbnail__img product-thumbnail__img--primary'
                                     width="480" height="480" style={{ '--image-scale': '1' }}
-                                    src={product.imageProducts[0].image}
-                                    alt={product.imageProducts[0].image} />
+                                    src={`${IMAGE_BASE_URL}` + product.imageProductEntity[0].image}
+                                    alt={`${IMAGE_BASE_URL}` + product.imageProductEntity[0].image} />
                                 <img loading="lazy"
                                     className='product-thumbnail__img product-thumbnail__img--secondary'
                                     width="480" height="480" style={{ '--image-scale': '1' }}
-                                    src={product.imageProducts[1].image}
-                                    alt={product.imageProducts[0].image} />
+                                    src={`${IMAGE_BASE_URL}` + product.imageProductEntity[1].image}
+                                    alt={`${IMAGE_BASE_URL}` + product.imageProductEntity[0].image} />
                             </a>
                             <div className="label_product d-none">
                                 <div className="label_wrapper">
-                                    - {product.productPriceEntity.discount}%
+                                    - {minDiscount}%
                                 </div>
                             </div>
                             <div className="product-action">
-                                <div className="group_action"
-                                    data-url="/happy-birthday-chocolate-cream-cake">
+                                <div className="group_action">
                                     <a onClick={() => getIdProduct(product.id)} title="Xem nhanh"
                                         className="btn-views btn_view btn right-to quick-view">
                                         <i className="fa fa-paperclip" aria-hidden="true"></i>
@@ -60,21 +63,21 @@ const ItemProductComponent = ({ product }) => {
                         </div>
                         <div className="product-info">
                             <h3 className="product-name"><a
-                                href="/happy-birthday-chocolate-cream-cake"
+                                onClick={() => getProduct(product.id)}
                                 title="Happy Birthday Chocolate Cream Cake (Meta coupon)">{product.nameProduct}</a></h3>
                             <div className="product-item-cta position-relative">
                                 <div className="price-box">
-                                    <span className="price">{parseInt(product.productPriceEntity.discountPrice).toLocaleString('it-IT')}₫</span>
-                                    <span className="compare-price">{parseInt(product.productPriceEntity.listPrice).toLocaleString('it-IT')}₫</span>
+                                    <span className="price product-price">{parseInt(minDiscountPrice).toLocaleString('it-IT')}₫</span>
+                                    <span className="compare-price">{parseInt(minPrice).toLocaleString('it-IT')}₫</span>
                                     <div className="label_product d-inline-block">
                                         <div className="label_wrapper">
-                                            - {product.productPriceEntity.discount}%
+                                            - {minDiscount}%
                                         </div>
                                     </div>
 
                                 </div>
 
-                                <button data-href="/happy-birthday-chocolate-cream-cake"
+                                <button onClick={() => getProduct(product.id)}
                                     className="product-item-btn btn-style2 btn left-to"
                                     title="Tùy chọn" type="button"
                                 >

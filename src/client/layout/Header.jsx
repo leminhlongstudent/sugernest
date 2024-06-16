@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
-import { getTotalItemsInCart } from '../services/ProductService.js';
 import './layout.css'
 import Sidebar from './Sidebar.jsx'
+import { IMAGE_BASE_URL, REST_API_BASE_URL } from '../services/ProductService.js';
 
 const Header = () => {
   const [cart, setCart] = useState([]);
@@ -14,23 +14,32 @@ const Header = () => {
   const { user, logout, token } = useAuth();
   const { updateCart } = useCart();
   const [cartTotal, setCartTotal] = useState(0);
+
   useEffect(() => {
     if (user && user.id) {
-      getTotalItemsInCart(user.id)
+      axios.get(`${REST_API_BASE_URL}/carts/total-items/${user.id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
         .then(response => {
           setCartTotal(response.data);
           updateCart(response.data);
         })
+        .catch(error => {
+          console.error('Error:', error);
+        });
     } else {
       setCartTotal(0);
     }
-  }, [user, updateCart]);
+  }, [user, updateCart, token]);
+
 
   useEffect(() => {
     if (!token) {
       return;
     }
-    axios.get('http://localhost:8080/sugarnest/v0.1/carts/my-cart', {
+    axios.get(`${REST_API_BASE_URL}/carts/my-cart`, {
       headers: {
         "Authorization": `Bearer ${token}`
       }
@@ -46,7 +55,7 @@ const Header = () => {
   }, [token, updateCart]);
 
   const deleteCartItem = (cartItemId) => {
-    axios.delete(`http://localhost:8080/sugarnest/v0.1/carts/remove-item/${cartItemId}`, {
+    axios.delete(`${REST_API_BASE_URL}/carts/remove-item/${cartItemId}`, {
       headers: {
         "Authorization": `Bearer ${token}`
       }
@@ -66,13 +75,16 @@ const Header = () => {
   }
   const handleClick = () => {
     if (user) {
-      navigator(`/profile/${user.id}`);
+      navigator(`/profile`);
     } else {
       navigator(`/login`);
     }
   };
   function getProduct(id) {
     navigator(`/products/${id}`);
+  }
+  function getOrders() {
+    navigator(`/orders`);
   }
 
   return (
@@ -115,7 +127,7 @@ const Header = () => {
                               <span className="bar" />
                             </div>
                             <div className="toogle-nav-focus-area"></div>
-                            <div className="menu-wrapper" style={{top: 'calc(100%)'}}>
+                            <div className="menu-wrapper" style={{ top: 'calc(100%)' }}>
                               <Sidebar />
                             </div>
                           </div>
@@ -149,7 +161,7 @@ const Header = () => {
                     <ul
                       className="header-right mb-0 list-unstyled d-flex align-items-center justify-content-end">
                       <li className='media d-lg-block d-none '>
-                        <a href="/apps/kiem-tra-don-hang" className='d-block text-center' title="Đơn hàng">
+                        <a onClick={getOrders} className='d-block text-center' title="Đơn hàng">
                           <img loading="lazy"
                             src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/order-icon.png?1704435927037"
                             width="24" height="24" className="align-self-center" alt="order-icon" />
@@ -159,7 +171,7 @@ const Header = () => {
                         </a>
                       </li>
                       <li className='media d-lg-block d-none '>
-                        <a href="/he-thong-cua-hang" className='d-block text-center'
+                        <a onClick={() => navigator(`/store-address`)} className='d-block text-center'
                           title="Hệ thống cửa hàng">
                           <img loading="lazy"
                             src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/address-icon.png?1704435927037"
@@ -213,7 +225,7 @@ const Header = () => {
                                       <div className="border_list">
                                         <div className="image_drop">
                                           <a className="product-image pos-relative embed-responsive embed-responsive-1by1" onClick={() => getProduct(item.productEntity.id)} title={item.productEntity.nameProduct}>
-                                            <img alt="Heavy Duty Paper Car" src={item.productEntity.imageProducts[0].image} width="100" />
+                                            <img alt="Heavy Duty Paper Car" src={`${IMAGE_BASE_URL}` + item.productEntity.imageProductEntity[0].image} width="100" />
                                           </a>
                                         </div>
                                         <div className="detail-item">
@@ -223,7 +235,7 @@ const Header = () => {
                                           </div>
                                           <span className="variant-title">{item.productSize} / {item.productColor}</span>
                                           <div className="product-details-bottom">
-                                            <span className="price">{parseInt(item.productEntity.productPriceEntity.discountPrice).toLocaleString('it-IT')}₫</span>
+                                            <span className="price">{parseInt(item.productEntity.sizeColorProductsEntity[0].discountPrice).toLocaleString('it-IT')}₫</span>
                                             <span className="quanlity"> x {item.quantity}</span>
                                           </div>
                                         </div>
@@ -262,64 +274,64 @@ const Header = () => {
                     </a>
                   </li>
                   <li className="menu-item list-group-item">
-                    <a href="/gioi-thieu" className="menu-item__link" title="Giới thiệu">
+                    <a onClick={() => navigator(`/introduction`)} className="menu-item__link" title="Giới thiệu">
                       <span> Giới thiệu</span>
                     </a>
                   </li>
                   <li className="menu-item list-group-item">
-                    <a href="/khuyen-mai" className="menu-item__link" title="Quà tặng 08/03">
+                    <a onClick={() => navigator(`/products`)} className="menu-item__link" title="Quà tặng 08/03">
                       <span> Quà tặng 08/03</span>
                     </a>
 
                   </li>
                   <li className="menu-item list-group-item">
-                    <a href="#" className="menu-item__link" title="Chương trình khuyến mãi">
+                    <a onClick={() => navigator(`/products`)} className="menu-item__link" title="Chương trình khuyến mãi">
                       <span> Chương trình khuyến mãi</span>
                       <i className="fa fa-chevron-right" aria-hidden="true"></i>
                     </a>
                     <div className="submenu scroll  default ">
                       <ul className="submenu__list">
                         <li className="submenu__item submenu__item--main">
-                          <a className="link" href="/flash-sales"
+                          <a className="link" onClick={() => navigator(`/products`)}
                             title="Landing Page - Flash Sales">Landing Page - Flash Sales</a>
                         </li>
                         <li className="submenu__item submenu__item--main">
-                          <a className="link" href="/landing-page-black-friday"
+                          <a className="link" onClick={() => navigator(`/products`)}
                             title="Landing Page - Black Friday">Landing Page - Black Friday</a>
                         </li>
                         <li className="submenu__item submenu__item--main">
-                          <a className="link" href="/landing-page-xmas"
+                          <a className="link" onClick={() => navigator(`/products`)}
                             title="Landing Page - XMas">Landing Page - XMas</a>
                         </li>
                         <li className="submenu__item submenu__item--main">
-                          <a className="link" href="/landing-page-food-and-beverage"
+                          <a className="link" onClick={() => navigator(`/products`)}
                             title="Landing Page - FnB">Landing Page - FnB</a>
                         </li>
                       </ul>
                     </div>
                   </li>
                   <li className="menu-item list-group-item">
-                    <a href="/san-pham-noi-bat" className="menu-item__link" title="Bánh ngon mỗi ngày">
+                    <a onClick={() => navigator(`/products`)} className="menu-item__link" title="Bánh ngon mỗi ngày">
                       <span> Bánh ngon mỗi ngày</span>
                     </a>
                   </li>
                   <li className="menu-item list-group-item">
-                    <a href="/cong-thuc" className="menu-item__link" title="Công thức làm bánh">
+                    <a className="menu-item__link" title="Công thức làm bánh">
                       <span> Công thức làm bánh</span>
                     </a>
                   </li>
                   <li className="menu-item list-group-item">
-                    <a href="/tin-tuc" className="menu-item__link" title="Chuyên mục làm bánh">
+                    <a className="menu-item__link" title="Chuyên mục làm bánh">
                       <span> Chuyên mục làm bánh</span>
                     </a>
                   </li>
                   <li className="menu-item list-group-item">
-                    <a href="/lien-he" className="menu-item__link" title="Liên hệ">
+                    <a onClick={() => navigator(`/contact`)} className="menu-item__link" title="Liên hệ">
                       <span> Liên hệ</span>
                     </a>
                   </li>
                   <li className="menu-item list-group-item">
-                    <a href="/lien-he" className="menu-item__link" title="Góp ý / Khiếu nại">
+                    <a className="menu-item__link" title="Góp ý / Khiếu nại">
                       <span> Góp ý chúng tôi </span>
                     </a>
                   </li>

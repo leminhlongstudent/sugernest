@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Breadcrumb = () => {
+const Breadcrumb = ({page}) => {
     return (
         <div> <section className="bread-crumb mb-0">
             <span className="crumb-border"></span>
@@ -13,7 +13,7 @@ const Breadcrumb = () => {
                                 <span className="mr_lr">&nbsp;/&nbsp;</span>
                             </li>
                             <li>
-                                <strong><span> Tất cả sản phẩm</span></strong></li>
+                                <strong><span>{page}</span></strong></li>
                         </ul>
                     </div>
                 </div>

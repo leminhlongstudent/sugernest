@@ -96,13 +96,11 @@ const Footer = () => {
 
                 </p>
                 <div className="single-contact">
-                  <i className="fa fa-map-marker-alt"></i>
                   <div className="content"><strong>Địa chỉ: </strong>
                     <span>150/8 Nguyễn Duy Cung, Phường 12, TP Hồ Chí Minh, </span>
                   </div>
                 </div>
                 <div className="single-contact">
-                  <i className="fa fa-mobile-alt"></i>
                   <div className="content">
                     <strong>Số điện thoại: </strong>
                     <a className="link" title="19006750" href="tel:19006750">19006750</a>

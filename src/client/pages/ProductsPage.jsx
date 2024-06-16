@@ -1,29 +1,115 @@
-import React from 'react'
-import { useEffect, useState} from 'react'
-import { listProducts } from '../services/ProductService.js'
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import Coupon from '../components/Coupon.jsx';
 import Breadcrumb from '../components/Breadcrumb.jsx';
 import ItemProductComponent from '../components/ItemProduct.jsx';
-
+import { Range, getTrackBackground } from 'react-range';
+import { REST_API_BASE_URL } from '../services/ProductService.js';
 
 const ProductsPage = () => {
-    const [products, setProducts] = useState([])
+    const { category } = useParams();
+    const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
+    const [suppliers, setSuppliers] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [selectedSuppliers, setSelectedSuppliers] = useState([]);
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [priceRange, setPriceRange] = useState([0, 2000000]);
+    const [sortOption, setSortOption] = useState('id:asc');
+
     useEffect(() => {
-        listProducts(currentPage).then((response) => {
-            setProducts(response.data.result.content);
-            setTotalPages(response.data.result.totalPages);
-        }).catch((error) => { console.log(error) });
-    }, [currentPage]);
+        fetchProducts();
+    }, [currentPage, selectedSuppliers, selectedCategories, priceRange, sortOption]);
+
+    const fetchProducts = async () => {
+        try {
+            const response = await axios.get(`${REST_API_BASE_URL}/products`, {
+                params: {
+                    page: currentPage - 1,
+                    size: 12,
+                    suppliers: selectedSuppliers.join(','),
+                    categories: selectedCategories.join(','),
+                    minPrice: priceRange[0],
+                    maxPrice: priceRange[1],
+                    sortBy: sortOption.split(':')[0],
+                    sortDirection: sortOption.split(':')[1].toUpperCase()
+                }
+            });
+            setProducts(response.data.content);
+            setTotalPages(response.data.totalPages);
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        }
+    };
+
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
     };
+
+    const fetchSuppliers = async () => {
+        try {
+            const response = await axios.get(`${REST_API_BASE_URL}/suppliers/all`);
+            if (response.status === 200) {
+                setSuppliers(response.data.result);
+            } else {
+                console.error('Error fetching suppliers:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error fetching suppliers:', error);
+        }
+    };
+
+    const fetchCategories = async () => {
+        try {
+            const response = await axios.get(`${REST_API_BASE_URL}/categories/all`);
+            if (response.status === 200) {
+                setCategories(response.data.result);
+            } else {
+                console.error('Error fetching categories:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchCategories();
+        fetchSuppliers();
+    }, []);
+
+    const handleSupplierChange = (supplier) => {
+        setSelectedSuppliers((prev) =>
+            prev.includes(supplier) ? prev.filter((s) => s !== supplier) : [...prev, supplier]
+        );
+    };
+
+    const handleCategoryChange = (category) => {
+        setSelectedCategories((prev) =>
+            prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
+        );
+    };
+
+    useEffect(() => {
+        if (category && !selectedCategories.includes(category)) {
+            setSelectedCategories((prev) => [...prev, category]);
+        }
+    }, [category]);
+
+    const handleSortChange = (e) => {
+        setSortOption(e.target.value);
+    };
+
+    const handleSliderChange = (values) => {
+        setPriceRange(values);
+    };
+
     return (
         <div>
             <Breadcrumb />
             <div className='collection_banner mb-3 container text-center'>
-                <a className="banner" href="/collections/all" title="Tất cả sản phẩm">
+                <a className="banner" title="Tất cả sản phẩm">
                     <picture>
                         <source media="(min-width: 768px)"
                             srcSet="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/collection_main_banner.jpg?1704435927037"
@@ -64,13 +150,15 @@ const ProductsPage = () => {
                                             <label className="left">
                                                 <span className=''>Sắp xếp: </span>
                                             </label>
-                                            <select className="content_ul" >
-                                                <option data-sort="name:asc" value="alpha-asc">Tên A &rarr; Z</option>
-                                                <option data-sort="name:desc" value="alpha-desc">Tên Z &rarr; A</option>
-                                                <option data-sort="price_min:asc" value="price-asc">Giá tăng dần</option>
-                                                <option data-sort="price_min:desc" value="price-desc">Giá giảm dần</option>
-                                                <option data-sort="created_on:desc" value="created-desc">Hàng mới</option>
+                                            <select className="content_ul" onChange={handleSortChange} value={sortOption}>
+                                                <option value="id:asc">Mặc định</option>
+                                                <option value="id:desc">Mới nhất</option>
+                                                <option value="nameProduct:asc">Tên A &rarr; Z</option>
+                                                <option value="nameProduct:desc">Tên Z &rarr; A</option>
+                                                <option value="listPrice:asc">Giá tăng dần</option>
+                                                <option value="listPrice:desc">Giá giảm dần</option>
                                             </select>
+
                                         </div>
                                     </div>
                                 </div>
@@ -81,61 +169,140 @@ const ProductsPage = () => {
                             </div>
                         </div>
                         <div className="row">
-                            <div className='col-lg-3 col-md-12 col-sm-12'>
-                                <aside className=" scroll card py-2 dqdt-sidebar sidebar left-content">
+                            <div className="col-lg-3 col-md-12 col-sm-12">
+                                <aside className="scroll card py-2 dqdt-sidebar sidebar left-content">
                                     <div className="wrap_background_aside asidecollection">
                                         <div className="filter-content aside-filter">
                                             <div className="filter-container">
                                                 <button className="btn d-block d-lg-none open-filters p-0">
                                                     <i className="fa fa-arrow-left mr-3 "> </i>
-                                                    <b className="d-inline">
-                                                        Tìm theo
-                                                    </b>
+                                                    <b className="d-inline">Tìm theo</b>
                                                 </button>
-                                                <div className="filter-container__selected-filter" style={{ display: 'none' }}>
-                                                    <div className="filter-container__selected-filter-header clearfix d-none">
-                                                        <span className="filter-container__selected-filter-header-title"><i
-                                                            className="fa fa-arrow-left hidden-sm-up"></i> Bạn chọn</span>
-                                                        <a href=""
-                                                            className="filter-container__clear-all">Bỏ hết <i
-                                                                className="fa fa-angle-right"></i></a>
-                                                    </div>
-                                                </div>
                                                 <aside className="aside-item filter-vendor">
                                                     <div className="aside-title">
-                                                        <h2 className="title-head margin-top-0"><span>Hãng sản xuất</span></h2>
+                                                        <h2 className="title-head margin-top-0">
+                                                            <span>Thương hiệu</span>
+                                                        </h2>
                                                     </div>
                                                     <div className="aside-content filter-group">
                                                         <ul>
-                                                            <li className="filter-item filter-item--check-box filter-item--green">
-                                                                <span>
-                                                                    <label className="custom-checkbox" htmlFor="filter-abc">
-                                                                        <input type="checkbox" id="filter-abc"
-                                                                            data-group="PRODUCT_VENDOR"
-                                                                            data-field="vendor.filter_key" data-text=""
-                                                                            value="(&#34;ABC&#34;)" data-operator="OR" />
-                                                                        <i className="fa"></i>
-                                                                        ABC
-                                                                    </label>
-                                                                </span>
-                                                            </li>
-                                                            <li className="filter-item filter-item--check-box filter-item--green">
-                                                                <span>
-                                                                    <label className="custom-checkbox" htmlFor="filter-ega-cake">
-                                                                        <input type="checkbox" id="filter-ega-cake"
-                                                                            data-group="PRODUCT_VENDOR"
-                                                                            data-field="vendor.filter_key" data-text=""
-                                                                            value="(&#34;Ega-Cake&#34;)" data-operator="OR" />
-                                                                        <i className="fa"></i>
-                                                                        Ega-Cake
-                                                                    </label>
-                                                                </span>
-                                                            </li>
+                                                            {suppliers.map((supplier, index) => (
+                                                                <li
+                                                                    key={supplier.id}
+                                                                    className="filter-item filter-item--check-box filter-item--green"
+                                                                >
+                                                                    <span>
+                                                                        <label className="custom-checkbox" htmlFor={`filter-${index}`}>
+                                                                            <input
+                                                                                type="checkbox"
+                                                                                id={`filter-${index}`}
+                                                                                onChange={() => handleSupplierChange(supplier.nameSupplier)}
+                                                                            />
+                                                                            <i className="fa" />
+                                                                            {supplier.nameSupplier}
+                                                                        </label>
+                                                                    </span>
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                </aside>
+
+                                                <aside className="aside-item filter-price dq-filterxx">
+                                                    <div className="aside-title">
+                                                        <h2 className="title-head margin-top-0">
+                                                            <span>GIÁ</span>
+                                                        </h2>
+                                                    </div>
+                                                    <div className="aside-content filter-group scroll">
+                                                        <Range
+                                                            values={priceRange}
+                                                            step={50000}
+                                                            min={0}
+                                                            max={2000000}
+                                                            onChange={handleSliderChange}
+                                                            renderTrack={({ props, children }) => (
+                                                                <div
+                                                                    {...props}
+                                                                    style={{
+                                                                        ...props.style,
+                                                                        height: '6px',
+                                                                        width: '100%',
+                                                                        background: getTrackBackground({
+                                                                            values: priceRange,
+                                                                            colors: ['#ccc', '#548BF4', '#ccc'],
+                                                                            min: 0,
+                                                                            max: 2000000
+                                                                        }),
+                                                                        margin: '20px 0'
+                                                                    }}
+                                                                >
+                                                                    {children}
+                                                                </div>
+                                                            )}
+                                                            renderThumb={({ props, isDragged }) => (
+                                                                <div
+                                                                    {...props}
+                                                                    style={{
+                                                                        ...props.style,
+                                                                        height: '20px',
+                                                                        width: '20px',
+                                                                        borderRadius: '50%',
+                                                                        backgroundColor: '#FFF',
+                                                                        border: '1px solid #CCC',
+                                                                        display: 'flex',
+                                                                        justifyContent: 'center',
+                                                                        alignItems: 'center',
+                                                                        boxShadow: '0px 2px 6px #AAA'
+                                                                    }}
+                                                                >
+                                                                    <div
+                                                                        style={{
+                                                                            height: '10px',
+                                                                            width: '10px',
+                                                                            backgroundColor: isDragged ? '#548BF4' : '#CCC'
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                        />
+                                                        <p>
+                                                            <label htmlFor="amount">Giá:</label>
+                                                            <span id="amount">
+                                                                {priceRange[0].toLocaleString('vi-VN')}₫ - {priceRange[1].toLocaleString('vi-VN')}₫
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                </aside>
+                                                <aside className="aside-item filter-type">
+                                                    <div className="aside-title">
+                                                        <h2 className="title-head margin-top-0">
+                                                            <span>Loại sản phẩm</span>
+                                                        </h2>
+                                                    </div>
+                                                    <div className="aside-content filter-group scroll">
+                                                        <ul>
+                                                            {categories.map((category, index) => (
+                                                                <li key={category.id} className="filter-item filter-item--check-box filter-item--green">
+                                                                    <span>
+                                                                        <label className="custom-checkbox" htmlFor={`filter-category-${index}`}>
+                                                                            <input
+                                                                                type="checkbox"
+                                                                                id={`filter-category-${index}`}
+                                                                                checked={selectedCategories.includes(category.nameCategory)}
+                                                                                onChange={() => handleCategoryChange(category.nameCategory)}
+                                                                            />
+                                                                            <i className="fa" />
+                                                                            {category.nameCategory}
+                                                                        </label>
+                                                                    </span>
+                                                                </li>
+                                                            ))}
                                                         </ul>
                                                     </div>
                                                 </aside>
                                             </div>
-                                        </div>
+                                        </div>{" "}
                                     </div>
                                 </aside>
                             </div>
@@ -152,12 +319,9 @@ const ProductsPage = () => {
                                 <div className="category-products products">
                                     <div className="products-view products-view-grid collection_reponsive list_hover_pro">
                                         <div className="row product-list content-col">
-                                            {/* Render ProductSlider */}
-                                            {
-                                                products.map(product =>
-                                                    <ItemProductComponent key={product.id} product={product} />
-                                                )
-                                            }
+                                            {products.map(product => (
+                                                <ItemProductComponent key={product.id} product={product} />
+                                            ))}
                                         </div>
                                         <div className="section pagenav">
                                             <nav className="clearfix relative nav_pagi w_100">
@@ -187,9 +351,8 @@ const ProductsPage = () => {
                     </div>
                 </div>
             </section>
-
         </div>
-    )
-}
+    );
+};
 
-export default ProductsPage
+export default ProductsPage;

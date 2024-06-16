@@ -1,12 +1,12 @@
 import React from 'react'
 import { useEffect, useState, useRef } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { listCategories } from '../services/ProductService.js'
 
 const Sidebar = () => {
 
   const [categories, setCategories] = useState([])
-  const navigator = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     listCategories().then((response) => {
@@ -16,7 +16,7 @@ const Sidebar = () => {
     })
   }, [])
   function getListProduct() {
-    navigator(`/products`)
+    navigate(`/products`)
   }
   return (
     <div>
@@ -32,7 +32,7 @@ const Sidebar = () => {
               </a>
             </li>
             <li className="menu-item list-group-item">
-              <a href="/collections/all" className="menu-item__link" title="Tổng hơp khuyến mãi">
+              <a onClick={() => navigate(`/products`)} className="menu-item__link" title="Tổng hơp khuyến mãi">
                 <img loading="lazy" width='24' height='24'
                   src="https://bizweb.dktcdn.net/100/419/628/themes/897067/assets/menu_icon_2.png?1704435927037"
                   alt="Tổng hơp khuyến mãi" />
@@ -43,7 +43,7 @@ const Sidebar = () => {
               categories.map((category, index) => {
                 return (
                   <li key={index} className="menu-item list-group-item">
-                    <a href={`/collections/${category.id}`} className="menu-item__link" title={category.nameCategory}>
+                    <a onClick={() => navigate(`/products/${category.nameCategory}`)} className="menu-item__link" title={category.nameCategory}>
                       <img loading="lazy" width='24' height='24'
                         src={category.imageCategory ? category.imageCategory : "https://bizweb.dktcdn.net/100/419/628/themes/897067/assets/menu_icon_1.png?1704435927037"}
                         alt="Tổng hơp khuyến mãi" />
@@ -56,26 +56,26 @@ const Sidebar = () => {
           </ul>
         </nav>
       </div>
-      <ul className="shop-policises list-unstyled mb-0 pr-0">
+      <ul style={{ backgroundColor: 'white' }} className="shop-policises list-unstyled mb-0 pr-0">
         <li>
           <img className="img-fluid"
             src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/policy_header_image_1.png?1704435927037"
             loading="lazy" width="24" height="24" alt="Giao hàng đúng giờ" />
-          <a className="link" href="/chinh-sach-giao-hang" title="Giao hàng đúng giờ">Giao hàng đúng
+          <a className="link" title="Giao hàng đúng giờ">Giao hàng đúng
             giờ</a>
         </li>
         <li>
           <img className="img-fluid"
             src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/policy_header_image_2.png?1704435927037"
             loading="lazy" width="24" height="24" alt="Miễn phí đổi trả trong 7 ngày" />
-          <a className="link" href="/chinh-sach-doi-tra" title="Miễn phí đổi trả trong 7 ngày">Miễn phí
+          <a className="link" title="Miễn phí đổi trả trong 7 ngày">Miễn phí
             đổi trả trong 7 ngày</a>
         </li>
         <li>
           <img className="img-fluid"
             src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/policy_header_image_3.png?1704435927037"
             loading="lazy" width="24" height="24" alt="Ưu đãi hấp dẫn mỗi ngày" />
-          <a className="link" href="/uu-dai-moi-ngay" title="Ưu đãi hấp dẫn mỗi ngày">Ưu đãi hấp dẫn mỗi
+          <a className="link" title="Ưu đãi hấp dẫn mỗi ngày">Ưu đãi hấp dẫn mỗi
             ngày</a>
         </li>
         <li className='hotline'>

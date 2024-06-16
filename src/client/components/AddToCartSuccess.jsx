@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { getCartByAccountId } from '../services/ProductService';
+import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext';
+import { IMAGE_BASE_URL, REST_API_BASE_URL } from '../services/ProductService';
 
 const AddToCartSuccess = ({ handleClose, product, cartItem }) => {
     const [cart, setCart] = useState([]);
+    const { token } = useAuth();
     const navigate = useNavigate();
 
     function getMyCart() {
@@ -11,10 +14,15 @@ const AddToCartSuccess = ({ handleClose, product, cartItem }) => {
     }
 
     useEffect(() => {
-        getCartByAccountId(cartItem.accountId)
+        axios.get(`${REST_API_BASE_URL}/carts/${cartItem.accountId}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        })
             .then(response => {
-                setCart(response.data.result)
-            }).
+                setCart(response.data.result);
+            })
+            .
             catch(error => { console.error('Error:', error) });
 
     }, [cartItem]);
@@ -40,7 +48,7 @@ const AddToCartSuccess = ({ handleClose, product, cartItem }) => {
                                 <div className="media">
                                     <div className="media-left thumb_img">
                                         <div className="thumb-1x1">
-                                            <img loading="lazy" src={product.imageProducts[0].image} alt="Bánh cupcake queen" />
+                                            <img loading="lazy" src={`${IMAGE_BASE_URL}`+product.imageProductEntity[0].image} alt="Bánh cupcake queen" />
                                         </div>
                                     </div>
                                     <div className="media-body body_content">

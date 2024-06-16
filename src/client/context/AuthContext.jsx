@@ -1,17 +1,31 @@
-import React, { createContext, useContext, useState,useEffect } from 'react';
-import { loginToken } from '../services/ProductService.js';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { loginToken } from '../services/AuthService.js';
 import axios from 'axios';
+import { REST_API_BASE_URL } from '../services/ProductService.js';
 // Tạo context
 const AuthContext = createContext();
 
 // Tạo provider
 export function AuthProvider({ children }) {
-    const [token, setToken] = useState(() => {
+
+    const [token, setToken] = useState(null); // Ban đầu đặt token là null
+
+    useEffect(() => {
         if (typeof window !== 'undefined') {
-            return localStorage.getItem('token') || null;
+            const tokenFromStorage = localStorage.getItem('token');
+            if (tokenFromStorage) {
+                setToken(tokenFromStorage);
+            }
         }
-        return null;
-    });
+    }, []); 
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+
+        if (token) {
+            localStorage.setItem('token', token);
+        }
+    }, []);
 
     const [user, setUser] = useState(null); // Thêm state để lưu trữ thông tin người dùng
 
@@ -20,17 +34,18 @@ export function AuthProvider({ children }) {
             if (token) {
                 try {
                     // Gọi API để lấy thông tin người dùng
-                    axios.get("http://localhost:8080/sugarnest/v0.1/account/myInfo", {
+                    axios.get(`${REST_API_BASE_URL}/account/myInfo`, {
                         headers: {
                             "Authorization": `Bearer ${token}`
                         }
                     })
-                    .then(response => {
-                        setUser(response.data.result);
-                    })
-                    .catch(error => {
-                        console.error("There was an error with the Axios operation:", error);
-                    });
+                        .then(response => {
+                            setUser(response.data.result);
+                            localStorage.setItem('user', JSON.stringify(response.data.result));
+                        })
+                        .catch(error => {
+                            console.error("There was an error with the Axios operation:", error);
+                        });
                 } catch (error) {
                     console.error('Error checking token validity:', error);
                 }
@@ -48,17 +63,18 @@ export function AuthProvider({ children }) {
                 setToken(newToken);
 
                 // Gọi API để lấy thông tin người dùng
-                axios.get("http://localhost:8080/sugarnest/v0.1/account/myInfo", {
+                axios.get(`${REST_API_BASE_URL}/account/myInfo`, {
                     headers: {
                         "Authorization": `Bearer ${newToken}`
                     }
                 })
-                .then(response => {
-                   setUser(response.data.result);
-                })
-                .catch(error => {
-                    console.error("There was an error with the Axios operation:", error);
-                });
+                    .then(response => {
+                        setUser(response.data.result);
+                        localStorage.setItem('user', JSON.stringify(response.data.result));
+                    })
+                    .catch(error => {
+                        console.error("There was an error with the Axios operation:", error);
+                    });
                 return true; // Trả về true nếu đăng nhập thành công
             } else {
                 console.error('Login failed: Unexpected response:', response);
@@ -73,6 +89,7 @@ export function AuthProvider({ children }) {
 
     const logout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
         setToken(null);
         setUser(null);
     };

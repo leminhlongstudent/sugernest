@@ -2,31 +2,32 @@ import React from 'react'
 import { useEffect, useState, useRef } from 'react'
 import Slider from "react-slick";
 import Coupon from '../components/Coupon.jsx'
-import { getProductByCategory } from '../services/ProductService.js'
+import { getLatestProduct, getMostViewedProduct, getProductByCategory, getTopSellingProduct } from '../services/ProductService.js'
 import { useNavigate } from 'react-router-dom'
 import ItemProductComponent from '../components/ItemProduct.jsx';
 import Sidebar from '../layout/Sidebar.jsx';
 
 const HomePage = () => {
-  const [flashsaleProducts, setflashsaleProducts] = useState([])
-  const [valentineProducts, setproductsValentine] = useState([])
-  const [sweetProducts, setsweetProducts] = useState([])
+  const [topSellingProducts, setTopSellingProducts] = useState([])
+  const [lasestProduct, setLasestProduct] = useState([])
+  const [mostViewedProduct, setMostViewedProduct] = useState([])
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getProductByCategory(1, 4).then((response) => {
-      setflashsaleProducts(response.data.result)
+    getTopSellingProduct(4).then((response) => {
+      setTopSellingProducts(response.data.result)
     }).catch((error) => { console.log(error) });
   }, [])
 
   useEffect(() => {
-    getProductByCategory(1, 6).then((response) => {
-      setproductsValentine(response.data.result)
+    getLatestProduct(6).then((response) => {
+      setLasestProduct(response.data.result)
     }).catch((error) => { console.log(error) });
   }, [])
 
   useEffect(() => {
-    getProductByCategory(1, 4).then((response) => {
-      setsweetProducts(response.data.result)
+    getMostViewedProduct(4).then((response) => {
+      setMostViewedProduct(response.data.result)
     }).catch((error) => { console.log(error) });
   }, [])
   const settingsForMainCarousel = {
@@ -66,7 +67,7 @@ const HomePage = () => {
                 <div className="home-slider">
                   <Slider {...settingsForMainCarousel}>
                     <div className="items text-center">
-                      <a href="/collections/all" title="Sản phẩm nổi bật">
+                      <a onClick={() => getListProduct()} title="Sản phẩm nổi bật">
                         <picture>
                           <source media="(max-width: 480px)"
                             srcSet="//bizweb.dktcdn.net/thumb/large/100/419/628/themes/897067/assets/slider_1.jpg?1704435927037" />
@@ -77,7 +78,7 @@ const HomePage = () => {
                       </a>
                     </div>
                     <div className="items text-center">
-                      <a href="/collections/all" title="Khuyến mãi lớn chào xuân">
+                      <a onClick={() => getListProduct()} title="Khuyến mãi lớn chào xuân">
                         <picture>
                           <source media="(max-width: 480px)"
                             srcSet="//bizweb.dktcdn.net/thumb/large/100/419/628/themes/897067/assets/slider_2.jpg?1704435927037" />
@@ -111,10 +112,9 @@ const HomePage = () => {
                       className='d-flex align-items-center flex-wrap flashsale__header justify-content-between col-12'>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <h2 className="heading-bar__title flashsale__title m-0">
-                          <a className='link' href="flash-sales" title="MÙA YÊU, DEAL NGỌT">MÙA YÊU, DEAL
-                            NGỌT</a>
+                          <a className='link' onClick={() => getListProduct()} title="SẢN PHẨM BÁN CHẠY NHẤT">SẢN PHẨM BÁN CHẠY NHẤT</a>
                         </h2>
-                        <img style={{ maxWidth: '30px', maxHeight: '20px' }} alt="MÙA YÊU, DEAL NGỌT"
+                        <img style={{ maxWidth: '30px', maxHeight: '20px' }} alt="SẢN PHẨM BÁN CHẠY NHẤT"
                           src='//bizweb.dktcdn.net/100/419/628/themes/897067/assets/flashsale-hot.png?1704435927037' />
                       </div>
                       <div className="flashsale__countdown-wrapper" style={{ display: 'none' }}>
@@ -127,7 +127,7 @@ const HomePage = () => {
                   </div>
                   <div className="row one-row">
                     {
-                      flashsaleProducts.map(product =>
+                      topSellingProducts.map(product =>
                         <ItemProductComponent key={product.id} product={product} />
                       )
                     }
@@ -140,99 +140,99 @@ const HomePage = () => {
                 <div className="mt-2 text-center row flex-nowrap collections-slide" style={{ '--item-per-row': '7' }}>
 
                   <div className="item">
-                    <a href="/collections/all" title="Sản phẩm HOT"
+                    <a onClick={() => navigate(`/products`)} title="Sản phẩm HOT"
                       className="pos-relative d-flex align-items-center ">
                       <img className="img-fluid m-auto object-contain mh-100" loading="lazy"
                         src="//bizweb.dktcdn.net/thumb/small/100/419/628/themes/897067/assets/coll_1.jpg?1704435927037"
                         width="64" height="64" alt="coll_1_title" />
                     </a>
                     <h3 className="mb-0">
-                      <a href="/collections/all" title="Sản phẩm HOT">
+                      <a onClick={() => navigate(`/products`)} title="Sản phẩm HOT">
                         Sản phẩm HOT
                       </a>
                     </h3>
                   </div>
 
                   <div className="item">
-                    <a href="/collections/all" title="Bánh kem nhỏ"
+                    <a onClick={() => navigate(`/products/Bánh Chocolate`)} title="Bánh kem nhỏ"
                       className="pos-relative d-flex align-items-center ">
                       <img className="img-fluid m-auto object-contain mh-100" loading="lazy"
                         src="//bizweb.dktcdn.net/thumb/small/100/419/628/themes/897067/assets/coll_2.jpg?1704435927037"
                         width="64" height="64" alt="coll_2_title" />
                     </a>
                     <h3 className="mb-0">
-                      <a href="/collections/all" title="Bánh kem nhỏ">
-                        Bánh kem nhỏ
+                      <a onClick={() => navigate(`/products/Bánh Chocolate`)} title="Bánh kem nhỏ">
+                        Bánh Chocolate
                       </a>
                     </h3>
                   </div>
 
                   <div className="item">
-                    <a href="/collections/all" title="Bánh ngọt "
+                    <a onClick={() => navigate(`/products/Bánh Tiramisu`)} title="Bánh ngọt "
                       className="pos-relative d-flex align-items-center ">
                       <img className="img-fluid m-auto object-contain mh-100" loading="lazy"
                         src="//bizweb.dktcdn.net/thumb/small/100/419/628/themes/897067/assets/coll_3.jpg?1704435927037"
                         width="64" height="64" alt="coll_3_title" />
                     </a>
                     <h3 className="mb-0">
-                      <a href="/collections/all" title="Bánh ngọt ">
-                        Bánh ngọt
+                      <a onClick={() => navigate(`/products/Bánh Tiramisu`)} title="Bánh ngọt ">
+                        Bánh Tiramisu
                       </a>
                     </h3>
                   </div>
 
                   <div className="item">
-                    <a href="/collections/all" title="Bánh kem "
+                    <a onClick={() => navigate(`/products/Bánh cupcake`)} title="Bánh kem "
                       className="pos-relative d-flex align-items-center ">
                       <img className="img-fluid m-auto object-contain mh-100" loading="lazy"
                         src="//bizweb.dktcdn.net/thumb/small/100/419/628/themes/897067/assets/coll_4.jpg?1704435927037"
                         width="64" height="64" alt="coll_4_title" />
                     </a>
                     <h3 className="mb-0">
-                      <a href="/collections/all" title="Bánh kem ">
-                        Bánh kem
+                      <a onClick={() => navigate(`/products/Bánh cupcake`)} title="Bánh kem ">
+                        Bánh cupcake
                       </a>
                     </h3>
                   </div>
 
                   <div className="item">
-                    <a href="/collections/all" title="Bánh mì"
+                    <a onClick={() => navigate(`/products/Bánh pumpkin`)} title="Bánh mì"
                       className="pos-relative d-flex align-items-center ">
                       <img className="img-fluid m-auto object-contain mh-100" loading="lazy"
                         src="//bizweb.dktcdn.net/thumb/small/100/419/628/themes/897067/assets/coll_5.jpg?1704435927037"
                         width="64" height="64" alt="coll_5_title" />
                     </a>
                     <h3 className="mb-0">
-                      <a href="/collections/all" title="Bánh mì">
-                        Bánh mì
+                      <a onClick={() => navigate(`/products/Bánh pumpkin`)} title="Bánh mì">
+                        Bánh pumpkin
                       </a>
                     </h3>
                   </div>
 
                   <div className="item">
-                    <a href="/collections/all" title="Bánh theo mùa "
+                    <a onClick={() => navigate(`/products/Matcha`)} title="Bánh theo mùa "
                       className="pos-relative d-flex align-items-center ">
                       <img className="img-fluid m-auto object-contain mh-100" loading="lazy"
                         src="//bizweb.dktcdn.net/thumb/small/100/419/628/themes/897067/assets/coll_6.jpg?1704435927037"
                         width="64" height="64" alt="coll_6_title" />
                     </a>
                     <h3 className="mb-0">
-                      <a href="/collections/all" title="Bánh theo mùa ">
-                        Bánh theo mùa
+                      <a onClick={() => navigate(`/products/Matcha`)} title="Bánh theo mùa ">
+                        Matcha
                       </a>
                     </h3>
                   </div>
 
                   <div className="item">
-                    <a href="/collections/all" title="Bánh đóng gói "
+                    <a onClick={() => navigate(`/products/Valentine`)} title="Bánh đóng gói "
                       className="pos-relative d-flex align-items-center ">
                       <img className="img-fluid m-auto object-contain mh-100" loading="lazy"
                         src="//bizweb.dktcdn.net/thumb/small/100/419/628/themes/897067/assets/coll_7.jpg?1704435927037"
                         width="64" height="64" alt="coll_7_title" />
                     </a>
                     <h3 className="mb-0">
-                      <a href="/collections/all" title="Bánh đóng gói ">
-                        Bánh đóng gói
+                      <a onClick={() => navigate(`/products/Valentine`)} title="Bánh đóng gói ">
+                        Valentine
                       </a>
                     </h3>
                   </div>
@@ -245,8 +245,8 @@ const HomePage = () => {
                 <div className="title_module_main heading-bar d-flex" style={{ backgroundColor: '#2d2d2d' }}>
                   <h2 className="heading-bar__title" style={{ color: '#ffffff' }}>
                     <img src='//bizweb.dktcdn.net/100/419/628/themes/897067/assets/section-hot-icon.png?1704435927037'
-                      alt='QUÀ VALENTINE' />
-                    <a className='link' href="/chocolate" title="QUÀ VALENTINE">QUÀ VALENTINE</a>
+                      alt='SẢN PHẨM MỚI NHẤT' />
+                    <a className='link' onClick={() => getListProduct()} title="SẢN PHẨM MỚI NHẤT">SẢN PHẨM MỚI NHẤT</a>
                   </h2>
                 </div>
                 <div className='section__products'>
@@ -254,18 +254,18 @@ const HomePage = () => {
                   <div className="row mx-sm-0" data-section="hot-section">
                     <div
                       className="col-12 col-lg-6 text-center pb-3 product-col section-hot__banner d-none d-lg-block">
-                      <a className="banner" href="/chocolate" title="QUÀ VALENTINE">
+                      <a className="banner" onClick={() => getListProduct()} title="SẢN PHẨM MỚI NHẤT">
                         <picture>
                           <source media="(max-width: 480px)"
                             srcSet="//bizweb.dktcdn.net/thumb/large/100/419/628/themes/897067/assets/section_hot.jpg?1704435927037" />
                           <img className=" img-fluid" loading="lazy"
                             src="//bizweb.dktcdn.net/thumb/grande/100/419/628/themes/897067/assets/section_hot.jpg?1704435927037"
-                            width="472" height="345" alt="QUÀ VALENTINE" />
+                            width="472" height="345" alt="SẢN PHẨM MỚI NHẤT" />
                         </picture>
                       </a>
                     </div>
                     {
-                      valentineProducts.map(product =>
+                      lasestProduct.map(product =>
                         <ItemProductComponent key={product.id} product={product} />
                       )
                     }
@@ -302,8 +302,8 @@ const HomePage = () => {
                   <h2 className="heading-bar__title" style={{ color: '#ffffff' }}>
                     <img src='//bizweb.dktcdn.net/100/419/628/themes/897067/assets/product_top_1-icon.png?1704435927037'
                       alt='QUÀ VALENTINE' />
-                    <a className='link' href="/san-pham-noi-bat" title="BÁNH NGỌT ">
-                      BÁNH NGỌT
+                    <a className='link' onClick={() => getListProduct()} title="BÁNH NGỌT ">
+                      ĐƯỢC XEM NHIỀU NHẤT
                     </a>
                   </h2>
                 </div>
@@ -311,7 +311,7 @@ const HomePage = () => {
                   <div id="product_top_1-tab-1" className="content_extabcurrent">
                     <div className="row ml-sm-0 mr-sm-0 product-list" data-section="tab-section">
                       {
-                        sweetProducts.map(product =>
+                        mostViewedProduct.map(product =>
                           <ItemProductComponent key={product.id} product={product} />
                         )
                       }
@@ -333,7 +333,7 @@ const HomePage = () => {
               <div className="section_banner_coll">
                 <div className="row justify-content-md-center text-center justify-content-start">
                   <div className="item col-8 col-md-4">
-                    <a className="banner" href="/collections/all" title="Bánh bì">
+                    <a className="banner" onClick={() => getListProduct()} title="Bánh bì">
                       <picture>
                         <source media="(max-width: 600px)"
                           srcSet="//bizweb.dktcdn.net/thumb/grande/100/419/628/themes/897067/assets/banner_coll_1_1.jpg?1704435927037" />
@@ -345,7 +345,7 @@ const HomePage = () => {
                     </a>
                   </div>
                   <div className="item col-8 col-md-4">
-                    <a className="banner" href="/collections/all" title="Bánh kem">
+                    <a className="banner" onClick={() => getListProduct()} title="Bánh kem">
                       <picture>
                         <source media="(max-width: 600px)"
                           srcSet="//bizweb.dktcdn.net/thumb/grande/100/419/628/themes/897067/assets/banner_coll_1_2.jpg?1704435927037" />
@@ -357,7 +357,7 @@ const HomePage = () => {
                     </a>
                   </div>
                   <div className="item col-8 col-md-4">
-                    <a className="banner" href="/collections/all" title="Bánh kem nhỏ">
+                    <a className="banner" onClick={() => getListProduct()} title="Bánh kem nhỏ">
                       <picture>
                         <source media="(max-width: 600px)"
                           srcSet="//bizweb.dktcdn.net/thumb/grande/100/419/628/themes/897067/assets/banner_coll_1_3.jpg?1704435927037" />

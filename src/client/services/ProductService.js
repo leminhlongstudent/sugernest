@@ -1,13 +1,16 @@
 import axios from "axios";
 
-const REST_API_BASE_URL = "http://localhost:8080/sugarnest/v0.1";
+export const REST_API_BASE_URL = "https://sugarbackend.onrender.com/sugarnest/v0.1";
+export const IMAGE_BASE_URL = "https://sugarbackend.onrender.com/sugarnest/v0.1/images/";
+
 
 export const listProducts = (page) => axios.get(`${REST_API_BASE_URL}/products?page=${page}`);
 export const getProduct = (id) => axios.get(`${REST_API_BASE_URL}/products/${id}`);
 export const getProductByCategory = (category, limit) => axios.get(`${REST_API_BASE_URL}/products/category/${category}/limit/${limit}`);
-export const listCategories = () => axios.get(`${REST_API_BASE_URL}/categories`);
-export const addCartItems = (cartItems) => axios.post(`${REST_API_BASE_URL}/carts/add-item`, cartItems);
-export const getCartByAccountId = (accountId) => axios.get(`${REST_API_BASE_URL}/carts/${accountId}`);
+export const getTopSellingProduct = (limit) => axios.get(`${REST_API_BASE_URL}/products/top-selling/${limit}`);
+export const getLatestProduct = (limit) => axios.get(`${REST_API_BASE_URL}/products/latest/${limit}`);
+export const getMostViewedProduct = (limit) => axios.get(`${REST_API_BASE_URL}/products/most-viewed/${limit}`);
+export const getRecommendedProducts = (category, limit) => axios.get(`${REST_API_BASE_URL}/products/recommended/${category}/limit/${limit}`);
+export const listCategories = () => axios.get(`${REST_API_BASE_URL}/categories/all`);
 export const loginToken = (accountName, password) => axios.post(`${REST_API_BASE_URL}/auth/login`, { accountName, password });
-export const getTotalItemsInCart = (accountId) => axios.get(`${REST_API_BASE_URL}/carts/total-items/${accountId}`);
-export const removeCartItem = (accountId,cartItemId) => axios.delete(`${REST_API_BASE_URL}/carts/remove-item/?${accountId}&${cartItemId}`);
+

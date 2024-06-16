@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import Slider from 'react-slick';
+import { IMAGE_BASE_URL } from '../services/ProductService';
 Modal.setAppElement('#root');
 
 const ModalZoom = ({ images, isOpen, onClose, selectedImageIndex }) => {
@@ -49,7 +50,7 @@ const ModalZoom = ({ images, isOpen, onClose, selectedImageIndex }) => {
       style={{
         overlay: {
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          zIndex: 9999
+          zIndex: 99999
         },
         content: {
           top: '50%',
@@ -68,7 +69,7 @@ const ModalZoom = ({ images, isOpen, onClose, selectedImageIndex }) => {
         <Slider {...settings}>
         {images.map((image, index) => (
            <div key={index} style={{ display: 'inline-block', maxHeight: '100%', verticalAlign: 'middle' }}>
-           <img src={image.image} alt="as" style={{ maxWidth: '100%', maxHeight: '100%', display: 'inline-block', verticalAlign: 'middle' }} />
+           <img src={`${IMAGE_BASE_URL}`+image.image} alt="as" style={{ maxWidth: '100%', maxHeight: '100%', display: 'inline-block', verticalAlign: 'middle' }} />
          </div>
            ))}
         </Slider>

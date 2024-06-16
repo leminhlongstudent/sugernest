@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useState } from 'react'
 import Slider from "react-slick";
 import ModalZoom from '../util/ModalZoom.jsx';
 import AddtoCart from './AddtoCart.jsx';
+import { IMAGE_BASE_URL } from '../services/ProductService.js';
 const ProductSlider = ({ product }) => {
     // Slider
     const [isProductInit, setIsProductInit] = useState(false);
@@ -79,10 +80,10 @@ const ProductSlider = ({ product }) => {
                             <div className="product-detail-left product-images bg-white py-3 col-12 col-lg-6 overflow-hidden">
                                 <div className="section slickthumb_relative_product_1">
                                     <Slider {...settingsForThumbnails} id="gallery_02">
-                                        {product.imageProducts.map((imageProduct, index) => (
+                                        {product.imageProductEntity.map((imageProduct, index) => (
                                             <div className={`item ${shiftIndex === index ? 'selected' : ''}`} key={index}>
-                                                <a onClick={() => handleButtonClickShift(index)} data-zoom-image={imageProduct.image}>
-                                                    <img className="img-fluid" data-img={imageProduct.image} src={imageProduct.image} alt={`Image ${index}`} loading="lazy" />
+                                                <a onClick={() => handleButtonClickShift(index)} data-zoom-image={`${IMAGE_BASE_URL}`+imageProduct.image}>
+                                                    <img className="img-fluid" data-img={`${IMAGE_BASE_URL}`+imageProduct.image} src={`${IMAGE_BASE_URL}`+imageProduct.image} alt={`Image ${index}`} loading="lazy" />
                                                 </a>
                                             </div>
                                         ))}
@@ -90,24 +91,24 @@ const ProductSlider = ({ product }) => {
                                 </div>
                                 <div className="pt-0 col_large_default large-image">
                                     <Slider {...settingsForMainCarousel} id="gallery_1" afterChange={handleProductInit}>
-                                        {product.imageProducts.map((imageProduct, index) => (
+                                        {product.imageProductEntity.map((imageProduct, index) => (
                                             <div className="item"
-                                                data-src={imageProduct.image} key={index}>
+                                                data-src={`${IMAGE_BASE_URL}`+imageProduct.image} key={index}>
                                                 <a onClick={() => handleImageClick(index)} className="d-block pos-relative embed-responsive embed-responsive-1by1">
                                                     <picture>
                                                         <source media="(max-width: 480px)"
-                                                            srcSet={imageProduct.image} />
+                                                            srcSet={`${IMAGE_BASE_URL}`+imageProduct.image} />
                                                         <img loading="lazy" className=" img-fluid" style={{ '--image-scale': '1', cursor: "pointer" }}
-                                                            data-img={imageProduct.image}
-                                                            src={imageProduct.image}
-                                                            alt={imageProduct.image} width="600" height="600"
-                                                            data-src={imageProduct.image} />
+                                                            data-img={`${IMAGE_BASE_URL}`+imageProduct.image}
+                                                            src={`${IMAGE_BASE_URL}`+imageProduct.image}
+                                                            alt={`${IMAGE_BASE_URL}`+imageProduct.image} width="600" height="600"
+                                                            data-src={`${IMAGE_BASE_URL}`+imageProduct.image} />
                                                     </picture>
                                                 </a>
                                             </div>
                                         ))}
                                     </Slider>
-                                    <ModalZoom images={product.imageProducts} isOpen={modalIsOpen} onClose={closeModal} selectedImageIndex={selectedImageIndex} />
+                                    <ModalZoom images={product.imageProductEntity} isOpen={modalIsOpen} onClose={closeModal} selectedImageIndex={selectedImageIndex} />
                                     <div className='share-group d-flex justify-content-center align-items-center mt-5'>
                                         <strong className='share-group__heading mr-3'>Chia sẻ</strong>
                                         <div className='share-group__list'>
@@ -127,7 +128,7 @@ const ProductSlider = ({ product }) => {
                                     </div>
                                 </div>
                             </div>
-                          <AddtoCart product={product} />
+                            <AddtoCart product={product} />
                         </div>
                     </div>
                 </div>

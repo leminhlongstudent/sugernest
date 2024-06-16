@@ -1,22 +1,32 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
+import MyPayPalButton from '../util/MyPayPalButton.jsx';
+import { IMAGE_BASE_URL, REST_API_BASE_URL } from '../services/ProductService.js';
+import Swal from 'sweetalert2';
 
 
 const CartPage = () => {
    const [cart, setCart] = useState([]);
    const [cartItems, setCartItems] = useState([]);
-   const { token } = useAuth();
+   const { user, token } = useAuth();
    const { updateCart } = useCart();
    const navigate = useNavigate();
-   function getProduct(id) {
-      navigate(`/products/${id}`);
+
+   if (!user) {
+      navigate('/login');
    }
+
+   function getProduct(id) {
+      navigate(`/product/${id}`);
+   }
+
    function getLoginPage() {
       navigate('/login');
    }
+
    function getHomePage() {
       navigate('/');
    }
@@ -26,7 +36,8 @@ const CartPage = () => {
          getLoginPage();
          return;
       }
-      axios.get('http://localhost:8080/sugarnest/v0.1/carts/my-cart', {
+
+      axios.get(`${REST_API_BASE_URL}/carts/my-cart`, {
          headers: {
             "Authorization": `Bearer ${token}`
          }
@@ -40,8 +51,9 @@ const CartPage = () => {
             console.error("There was an error with the Axios operation:", error);
          });
    }, [token, updateCart]);
+
    const deleteCartItem = (cartItemId) => {
-      axios.delete(`http://localhost:8080/sugarnest/v0.1/carts/remove-item/${cartItemId}`, {
+      axios.delete(`${REST_API_BASE_URL}/carts/remove-item/${cartItemId}`, {
          headers: {
             "Authorization": `Bearer ${token}`
          }
@@ -53,8 +65,9 @@ const CartPage = () => {
             console.error("There was an error removing the cart item:", error);
          });
    };
+
    const increaseQuantity = (cartItemId) => {
-      axios.put(`http://localhost:8080/sugarnest/v0.1/carts/increase-quantity/${cartItemId}`, {}, {
+      axios.put(`${REST_API_BASE_URL}/carts/increase-quantity/${cartItemId}`, {
          headers: {
             "Authorization": `Bearer ${token}`
          }
@@ -67,8 +80,8 @@ const CartPage = () => {
          });
    };
 
-   const decreaseQuantity = (cartItemId) => {
-      axios.put(`http://localhost:8080/sugarnest/v0.1/carts/decrease-quantity/${cartItemId}`, {}, {
+   const decreaseQuantity = (cartItemId) => {   
+      axios.put(`${REST_API_BASE_URL}/carts/decrease-quantity/${cartItemId}`, {
          headers: {
             "Authorization": `Bearer ${token}`
          }
@@ -80,12 +93,59 @@ const CartPage = () => {
             console.error("There was an error decreasing the item quantity:", error);
          });
    };
+
+   const handleCheckout = () => {
+      const address = document.getElementById('address').value;
+      const deliveryAt = document.getElementById('datepicker').value;
+      const note = document.getElementById('note').value;
+
+
+      if (!address || !deliveryAt || !note) {
+         Swal.fire({
+            icon: 'error',
+            title: 'Chưa đủ thông tin',
+            text: 'Vui lòng điền đầy đủ thông tin.',
+         });
+         return;
+      }
+
+      const orderData = {
+         address: address,
+         deliveryAt: deliveryAt,
+         note: note,
+         sale: ''
+      };
+
+      axios.post('http://localhost:8080/sugarnest/v0.1/orders', orderData, {
+         headers: {
+            "Authorization": `Bearer ${token}`
+         }
+      })
+         .then(response => {
+            updateCart(response.data.result);
+            console.log(response.data.result);
+            Swal.fire({
+               icon: 'success',
+               title: 'Đặt hàng',
+               text: 'Đặt hàng thành công!',
+            });
+         })
+         .catch(error => {
+            console.error('There was an error placing the order:', error);
+            Swal.fire({
+               icon: 'error',
+               title: 'Đặt hàng',
+               text: 'Đặt hàng thất bại. Vui lòng thử lại!',
+            });
+         });
+   };
+
    return (
       <section className="main-cart-page main-container col1-layout mobile-tab active" id="cart-tab" data-title="Giỏ hàng">
          <div className="wrap_background_aside padding-top-15 margin-bottom-40 padding-left-0 padding-right-0 cartmbstyle">
             <div className="cart-mobile container card border-0 py-2">
                {cartItems.length > 0 ? (
-                  <form action="/cart" method="post" className="margin-bottom-0">
+                  <form className="margin-bottom-0">
                      <div className="header-cart">
                         <div className=" title_cart_mobile heading-bar">
                            <h1 className="heading-bar__title">Giỏ hàng</h1>
@@ -108,7 +168,7 @@ const CartPage = () => {
                                     </div>
                                     <div className="item-product-cart-mobile">
                                        <a onClick={() => getProduct(item.productEntity.id)} className="product-images1  pos-relative embed-responsive embed-responsive-1by1" title={item.productEntity.nameProduct}>
-                                          <img className="img-fluid" src={item.productEntity.imageProducts[0].image} alt={item.productEntity.nameProduct} />
+                                          <img className="img-fluid" src={`${IMAGE_BASE_URL}`+item.productEntity.imageProductEntity[0].image} alt={item.productEntity.nameProduct} />
                                        </a>
                                     </div>
                                     <div className="product-cart-infor">
@@ -159,13 +219,18 @@ const CartPage = () => {
                                              Ngày nhận hàng
                                              <input id="datepicker" className="ega-delivery__date ega-form__control" type="date" />
                                           </label>
-                                          Thời gian nhận hàng
-                                          <select className="ega-delivery__date ega-form__control">
-                                             <option value="">Chọn thời gian</option>
-                                             <option value="08h00 - 12h00">08h00 - 12h00</option>
-                                             <option value="14h00 - 18h00">14h00 - 18h00</option>
-                                             <option value="19h00 - 21h00">19h00 - 21h00</option>
-                                          </select>
+                                          <label>
+                                             Họ và tên
+                                             <input id="nameOrder" className="ega-delivery__date ega-form__control" type="text" />
+                                          </label>
+                                          <label>
+                                             Số điện thoại
+                                             <input id="phoneNumber" className="ega-delivery__date ega-form__control" type="tel" />
+                                          </label>
+                                          <label>
+                                             Địa chỉ nhận hàng
+                                             <input id="address" className="ega-delivery__date ega-form__control" type="text" />
+                                          </label>
                                        </div>
                                        <div className="ega-delivery__note"></div>
                                     </div>
@@ -176,7 +241,24 @@ const CartPage = () => {
                                     </button>
                                  </div>
                               </div>
-                              <div className="timedeli-overaly">
+                              <div className="total-line-table__tbody">
+                                 <div className="total-line total-line--subtotal d-sm-flex justify-content-between">
+                                    <div className="total-line__name">
+                                       <strong>Tạm tính</strong>
+                                    </div>
+                                    <div className="total-line__price">
+                                       {parseInt(cart.totalPrice).toLocaleString('it-IT')}₫
+                                    </div>
+                                 </div>
+                                 <div className="total-line total-line--shipping-fee d-sm-flex justify-content-between">
+                                    <div className="total-line__name">
+                                       <strong>Phí vận chuyển</strong>
+                                    </div>
+                                    <div className="total-line__price">
+                                       <span className="origin-price" data-bind="getTextShippingPriceOriginal()"></span>
+                                       <span data-bind="getTextShippingPriceFinal()">40.000₫</span>
+                                    </div>
+                                 </div>
                               </div>
                            </div>
                            <div className="title-cart d-none d-sm-flex ">
@@ -194,7 +276,7 @@ const CartPage = () => {
                               </div>
                            </div>
                            <div className="checkout d-none d-sm-block">
-                              <button className="btn btn-block btn-proceed-checkout-mobile disabled" title="Tiến hành thanh toán" type="button">
+                              <button className="btn btn-block btn-proceed-checkout-mobile" title="Tiến hành thanh toán" type="button" onClick={handleCheckout}>
                                  <span>Thanh Toán</span>
                               </button>
                            </div>
@@ -208,6 +290,7 @@ const CartPage = () => {
                                  </a>
                               </div>
                            </div>
+                           <MyPayPalButton total="10.00" currency="USD" description="Your description" />
                         </div>
                      </div>
                   </form>
@@ -217,7 +300,7 @@ const CartPage = () => {
                         <div className="title-cart text-center">
                            <h1 className="d-none">Giỏ hàng</h1>
                            <div>
-                              <img src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/cart_empty_background.png?1704435927037" className="img-fluid" width="298" height="152"/>
+                              <img src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/cart_empty_background.png?1704435927037" className="img-fluid" width="298" height="152" />
                            </div>
                            <h3>
                               "Hổng” có gì trong giỏ hết
@@ -246,6 +329,7 @@ const CartPage = () => {
             </div>
          </div>
       </section>
-   )
-}
-export default CartPage
+   );
+};
+
+export default CartPage;
