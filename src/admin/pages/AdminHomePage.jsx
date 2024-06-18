@@ -1,10 +1,61 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 import OrderChart from '../util/OrderChart'
 import RevenueChart from '../util/RevenueChart'
-import VisitorChart from '../util/VisitorChart'
-import PopularProductChart from '../util/PopularProductChart'
-
+import axios from 'axios'
+import { REST_API_BASE_URL } from '../service/AdminService';
+import RevenuePieChart from '../util/RevenuePieChart';
 const AdminHomePage = () => {
+    const token = localStorage.getItem('token');
+    const [totalAccount, setTotalAccount] = useState(0);
+    const [totalProduct, setTotalProduct] = useState(0);
+    const [totalOrder, setTotalOrder] = useState(0);
+    const [outOfStock, setOutOfStock] = useState([]);
+    const [newCustomers, setNewCustomers] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [
+                    outOfStockResponse,
+                    totalAccountResponse,
+                    totalProductResponse,
+                    totalOrderResponse,
+                    newCustomersResponse
+                ] = await Promise.all([
+                    axios.get(`${REST_API_BASE_URL}/products/out-of-stock/4`, {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    }),
+                    axios.get(`${REST_API_BASE_URL}/account/total`, {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    }),
+                    axios.get(`${REST_API_BASE_URL}/products/total`, {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    }),
+                    axios.get(`${REST_API_BASE_URL}/orders/total`, {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    }),
+                    axios.get(`${REST_API_BASE_URL}/account/new-accounts/5`, {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    })
+                ]);
+
+                const sortedOutOfStock = outOfStockResponse.data.result.sort((a, b) => {
+                    return a.sizeColorProductsEntity[0].inventoryEntity.quantity - b.sizeColorProductsEntity[0].inventoryEntity.quantity;
+                });
+
+                setOutOfStock(sortedOutOfStock);
+                    setTotalAccount(totalAccountResponse.data.result);
+                setTotalProduct(totalProductResponse.data.result);
+                setTotalOrder(totalOrderResponse.data.result);
+                setNewCustomers(newCustomersResponse.data.result);
+            } catch (error) {
+                console.error("There was an error fetching the data!", error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
     return (
         <main className="app-content">
             <div className="row">
@@ -30,7 +81,7 @@ const AdminHomePage = () => {
                                 <div className="info">
                                     <h4>Tổng khách hàng</h4>
                                     <p>
-                                        <b>56 khách hàng</b>
+                                        <b>{totalAccount} khách hàng</b>
                                     </p>
                                     <p className="info-tong">Tổng số khách hàng được quản lý.</p>
                                 </div>
@@ -42,7 +93,7 @@ const AdminHomePage = () => {
                                 <div className="info">
                                     <h4>Tổng sản phẩm</h4>
                                     <p>
-                                        <b>1850 sản phẩm</b>
+                                        <b>{totalProduct} sản phẩm</b>
                                     </p>
                                     <p className="info-tong">Tổng số sản phẩm được quản lý.</p>
                                 </div>
@@ -54,7 +105,7 @@ const AdminHomePage = () => {
                                 <div className="info">
                                     <h4>Tổng đơn hàng</h4>
                                     <p>
-                                        <b>247 đơn hàng</b>
+                                        <b>{totalOrder} đơn hàng</b>
                                     </p>
                                     <p className="info-tong">Tổng số hóa đơn bán hàng trong tháng.</p>
                                 </div>
@@ -66,7 +117,7 @@ const AdminHomePage = () => {
                                 <div className="info">
                                     <h4>Sắp hết hàng</h4>
                                     <p>
-                                        <b>4 sản phẩm</b>
+                                        <b>{outOfStock.length} sản phẩm</b>
                                     </p>
                                     <p className="info-tong">
                                         Số sản phẩm cảnh báo hết cần nhập thêm.
@@ -76,50 +127,28 @@ const AdminHomePage = () => {
                         </div>
                         <div className="col-md-12">
                             <div className="tile">
-                                <h3 className="tile-title">Tình trạng đơn hàng</h3>
+                                <h3 className="tile-title">Sản phẩm sắp hết hàng</h3>
                                 <div>
                                     <table className="table table-bordered responsive-table">
                                         <thead>
                                             <tr>
-                                                <th>ID đơn hàng</th>
-                                                <th>Tên khách hàng</th>
-                                                <th>Tổng tiền</th>
-                                                <th>Trạng thái</th>
+                                                <th>ID</th>
+                                                <th>Tên sản phẩm</th>
+                                                <th>Màu sắc/Kích thước</th>
+                                                <th>Số lượng</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>AL3947</td>
-                                                <td>Phạm Thị Ngọc</td>
-                                                <td>19.770.000 đ</td>
-                                                <td>
-                                                    <span className="badge bg-info">Chờ xử lý</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>ER3835</td>
-                                                <td>Nguyễn Thị Mỹ Yến</td>
-                                                <td>16.770.000 đ</td>
-                                                <td>
-                                                    <span className="badge bg-warning">Đang vận chuyển</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>MD0837</td>
-                                                <td>Triệu Thanh Phú</td>
-                                                <td>9.400.000 đ</td>
-                                                <td>
-                                                    <span className="badge bg-success">Đã hoàn thành</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>MT9835</td>
-                                                <td>Đặng Hoàng Phúc </td>
-                                                <td>40.650.000 đ</td>
-                                                <td>
-                                                    <span className="badge bg-danger">Đã hủy </span>
-                                                </td>
-                                            </tr>
+                                            {
+                                                outOfStock.slice(0, 4).map(product => (
+                                                    <tr key={product.id}>
+                                                        <td>{product.id}</td>
+                                                        <td>{product.nameProduct}</td>
+                                                        <td>{product.sizeColorProductsEntity[0].color}/{product.sizeColorProductsEntity[0].size}</td>
+                                                        <td>{product.sizeColorProductsEntity[0].inventoryEntity.quantity}</td>
+                                                    </tr>
+                                                ))
+                                            }
                                         </tbody>
                                     </table>
                                 </div>
@@ -139,38 +168,16 @@ const AdminHomePage = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>#183</td>
-                                                <td>Hột vịt muối</td>
-                                                <td>21/7/1992</td>
-                                                <td>
-                                                    <span className="tag tag-success">0921387221</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>#219</td>
-                                                <td>Bánh tráng trộn</td>
-                                                <td>30/4/1975</td>
-                                                <td>
-                                                    <span className="tag tag-warning">0912376352</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>#627</td>
-                                                <td>Cút rang bơ</td>
-                                                <td>12/3/1999</td>
-                                                <td>
-                                                    <span className="tag tag-primary">01287326654</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>#175</td>
-                                                <td>Hủ tiếu nam vang</td>
-                                                <td>4/12/20000</td>
-                                                <td>
-                                                    <span className="tag tag-danger">0912376763</span>
-                                                </td>
-                                            </tr>
+                                            {
+                                                newCustomers.map(customer => (
+                                                    <tr key={customer.id}>
+                                                        <td>{customer.id}</td>
+                                                        <td>{customer.fullName}</td>
+                                                        <td>{new Date(customer.birthday).toLocaleDateString()}</td>
+                                                        <td>{customer.phone}</td>
+                                                    </tr>
+                                                ))
+                                            }
                                         </tbody>
                                     </table>
                                 </div>
@@ -179,20 +186,18 @@ const AdminHomePage = () => {
                     </div>
                 </div>
                 <div className="col-md-12 col-lg-6">
-                <div className="row">
-                <div className="col-md-12 col-lg-6">
-                    <OrderChart />
-                </div>
-                <div className="col-md-12 col-lg-6">
-                    <RevenueChart />
-                </div>
-                <div className="col-md-12 col-lg-6">
-                    <VisitorChart />
-                </div>
-                <div className="col-md-12 col-lg-6">
-                    <PopularProductChart />
-                </div>
-            </div>
+                    <div className="row">
+                        <div className="col-md-12 col-lg-6">
+                            <OrderChart />
+                        </div>
+                        <div className="col-md-12 col-lg-6">
+                            <RevenueChart />
+                        </div>
+                        <div className="col-md-12 col-lg-6">
+                            <RevenuePieChart />
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </main>

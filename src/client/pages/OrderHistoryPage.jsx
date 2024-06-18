@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Swal from 'sweetalert2';
+
 import { useAuth } from '../context/AuthContext.jsx';
-import { IMAGE_BASE_URL, REST_API_BASE_URL } from '../services/ProductService.js';
+import { REST_API_BASE_URL } from '../services/ProductService.js';
 
 const OrderHistoryPage = () => {
     const [orders, setOrders] = useState([]);
@@ -15,21 +17,52 @@ const OrderHistoryPage = () => {
             navigate('/login');
             return;
         }
+        refresh();
+
+    }, [token, user, navigate]);
+
+    const refresh = () => {
 
         axios.get(`${REST_API_BASE_URL}/orders/my-orders`, {
             headers: { "Authorization": `Bearer ${token}` }
         })
             .then(response => {
-                setOrders(response.data.result || []);
+                setOrders(response.data.result.reverse() || []);
             })
             .catch(error => {
                 console.error("There was an error with the Axios operation:", error);
             });
-    }, [token, user, navigate]);
+    }
 
     const handleLoadMore = () => {
         setDisplayCount(prevCount => prevCount + 2);
     };
+
+    const handleCancelOrder = (orderId) => {
+        Swal.fire({
+            title: 'Bạn có chắc chắn muốn hủy đơn hàng này không?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Đồng ý',
+            cancelButtonText: 'Hủy',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.put(`${REST_API_BASE_URL}/orders/cancel/${orderId}`, {}, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                })
+                    .then(response => {
+                        if (response.data.code === 200) {
+                            setOrders(orders.filter(order => order.id !== orderId));
+                            Swal.fire('Đã hủy đơn hàng thành công!', '', 'success');
+                            refresh();
+                        }
+                    })
+                    .catch(error => {
+                        console.error("There was an error with the Axios operation:", error);
+                    });
+            }
+        });
+    }
 
     return (
         <section className="main-order-history-page main-container col1-layout mobile-tab active" id="order-history-tab" data-title="Lịch sử đơn hàng">
@@ -46,7 +79,7 @@ const OrderHistoryPage = () => {
                                 <div key={index} className="order-item mb-4 p-3 border rounded">
                                     <div className="order-summary mb-2">
                                         <div className="order-id"><strong>Mã đơn hàng:</strong> {order.id}</div>
-                                        <div className="order-date"><strong>Ngày đặt hàng:</strong> {new Date(order.createAt).toLocaleDateString()}</div>
+                                        <div className="order-date"><strong>Ngày đặt hàng:</strong> {new Date(order.createdAt).toLocaleDateString()}</div>
                                         <div className="order-status"><strong>Trạng thái:</strong> {order.status}</div>
                                         <div className="order-payment"><strong>Địa chỉ nhận hàng:</strong> {order.address}</div>
                                     </div>
@@ -57,7 +90,7 @@ const OrderHistoryPage = () => {
                                                     <React.Fragment key={itemIndex}>
                                                         <a onClick={() => navigate(`/product/${item.productEntity.id}`)} className="d-block mb-2">
                                                             <div className="d-flex align-items-center">
-                                                                <img src={`${IMAGE_BASE_URL}`+item.productEntity.imageProductEntity[0].image} alt={item.productEntity.nameProduct} className="img-thumbnail" style={{ width: '80px', height: '80px', objectFit: 'cover' }} />
+                                                                <img src={item.productEntity.imageProductEntity[0].image} alt={item.productEntity.nameProduct} className="img-thumbnail" style={{ width: '80px', height: '80px', objectFit: 'cover' }} />
                                                                 <div className="ml-3">
                                                                     <strong className="mb-1">{item.productEntity.nameProduct}</strong>
                                                                     <p className="mb-0">Size: {item.productSize} / Color: {item.productColor}</p>
@@ -73,6 +106,11 @@ const OrderHistoryPage = () => {
                                         ) : null}
                                     </div>
                                     <div className="order-total"><strong>Tổng cộng:</strong> {parseInt(order.totalPrice).toLocaleString('it-IT')}₫</div>
+                                    {order.status === 'Chờ xác nhận' && (
+                                        <div className="order-action text-right">
+                                            <button style={{ color: 'red' }} className="btn btn_base" onClick={() => handleCancelOrder(`${order.id}`)}>Hủy đơn hàng</button>
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                             {displayCount < orders.length && (

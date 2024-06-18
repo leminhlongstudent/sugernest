@@ -50,7 +50,7 @@ const RegisterPage = () => {
 
         const { repassword, ...dataToSubmit } = formData;
         console.log('Data to submit:', dataToSubmit);
-    
+
         axios.post(`${REST_API_BASE_URL}/account/register`, dataToSubmit)
             .then(response => {
                 // Hiển thị SweetAlert2 để yêu cầu người dùng nhập mã xác thực
@@ -162,7 +162,7 @@ const RegisterPage = () => {
                 errorMessage = 'Mật khẩu phải có ít nhất 8 kí tự gồm ít nhất 1 kí tự in hoa và 1 kí tự đặc biệt.';
             }
         }
-        
+
 
         if (name === 'repassword' && value !== null && value !== '') {
             if (formData.password !== formData.repassword) {
@@ -174,6 +174,13 @@ const RegisterPage = () => {
             ...errors,
             [name]: errorMessage
         });
+    };
+    const handleFacebookLogin = () => {
+        window.location.href = `${REST_API_BASE_URL}/oauth2/authorization/facebook`;
+    };
+
+    const handleGoogleLogin = () => {
+        window.location.href = `${REST_API_BASE_URL}/oauth2/authorization/google`;
     };
     return (
         <>
@@ -363,9 +370,10 @@ const RegisterPage = () => {
                                             </div>
                                         </form>
 
-                                        <div className="block social-login--facebooks text-center">
+                                        <div className="block social-login--facebooks margin-top-20 text-center">
                                             <p className="a-center text-secondary">Hoặc đăng nhập bằng</p>
                                             <a
+                                                onClick={handleFacebookLogin}
                                                 className="social-login--facebook"
                                             >
                                                 <img
@@ -377,6 +385,7 @@ const RegisterPage = () => {
                                                 />
                                             </a>
                                             <a
+                                                onClick={handleGoogleLogin}
                                                 className="social-login--google"
                                             >
                                                 <img

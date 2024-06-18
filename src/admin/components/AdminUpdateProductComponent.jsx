@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import AppTitleComponent from './AppTitleComponent';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { IMAGE_BASE_URL, REST_API_BASE_URL } from '../service/AdminService';
+import { REST_API_BASE_URL } from '../service/AdminService';
 
 const AdminUpdateProductComponent = () => {
     const navigate = useNavigate();
@@ -606,7 +606,7 @@ const AdminUpdateProductComponent = () => {
                                                     width={400}
                                                     alt="Thumb image"
                                                     id="thumbimage"
-                                                    src={`${IMAGE_BASE_URL}`+mainImage}
+                                                    src={mainImage}
                                                 />
                                                 <button
                                                     type="button"
@@ -641,7 +641,7 @@ const AdminUpdateProductComponent = () => {
                                                     height={100}
                                                     width={100}
                                                     alt="Thumb image"
-                                                    src={`${IMAGE_BASE_URL}`+image}
+                                                    src={image}
                                                 />
                                                 <button
                                                     type="button"

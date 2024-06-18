@@ -1,10 +1,84 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import AppTitleComponent from './AppTitleComponent'
-import MonthlyDataChart from '../util/MonthlyDataChart'
-import SalesStatisticsChart from '../util/SalesStatisticsChart'
+import { REST_API_BASE_URL } from '../service/AdminService';
+import RevenueChart from '../util/RevenueChart';
+import RevenuePieChart from '../util/RevenuePieChart';
 
 
 const AdminReportComponent = () => {
+    const token = localStorage.getItem('token');
+    const [totalAccount, setTotalAccount] = useState(0);
+    const [totalProduct, setTotalProduct] = useState(0);
+    const [totalOrder, setTotalOrder] = useState(0);
+    const [totalAmount, setTotalAmount] = useState(0);
+    const [outOfStock, setOutOfStock] = useState([]);
+    const [newCustomers, setNewCustomers] = useState([]);
+    const [orders, setOrders] = useState([]);
+    const [cancelledOrdersCount, setCancelledOrdersCount] = useState(0);
+    const [topSellingProducts, setTopSellingProducts] = useState([])
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [
+                    outOfStockResponse,
+                    totalAccountResponse,
+                    totalProductResponse,
+                    totalOrderResponse,
+                    totalAmountResponse,
+                    newCustomersResponse,
+                    ordersResponse,
+                    topSellingProductsResponse
+                ] = await Promise.all([
+                    axios.get(`${REST_API_BASE_URL}/products/out-of-stock/4`, {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    }),
+                    axios.get(`${REST_API_BASE_URL}/account/total`, {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    }),
+                    axios.get(`${REST_API_BASE_URL}/products/total`, {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    }),
+                    axios.get(`${REST_API_BASE_URL}/orders/total`, {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    }),
+                    axios.get(`${REST_API_BASE_URL}/orders/total-amount`, {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    }),
+                    axios.get(`${REST_API_BASE_URL}/account/new-accounts/5`, {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    }),
+                    axios.get(`${REST_API_BASE_URL}/orders/admin-orders`, {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    }), axios.get(`${REST_API_BASE_URL}/products/top-selling/5`, {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    })
+                ]);
+
+                const sortedOutOfStock = outOfStockResponse.data.result.sort((a, b) => {
+                    return a.sizeColorProductsEntity[0].inventoryEntity.quantity - b.sizeColorProductsEntity[0].inventoryEntity.quantity;
+                });
+
+                const cancelledOrders = ordersResponse.data.result.filter(order => order.status === "Đã hủy").length;
+
+                setOutOfStock(sortedOutOfStock);
+                setTotalAccount(totalAccountResponse.data.result);
+                setTotalProduct(totalProductResponse.data.result);
+                setTotalOrder(totalOrderResponse.data.result);
+                setTotalAmount(totalAmountResponse.data.result);
+                setNewCustomers(newCustomersResponse.data.result);
+                setOrders(ordersResponse.data.result);
+                setCancelledOrdersCount(cancelledOrders);
+                setTopSellingProducts(topSellingProductsResponse.data.result);
+            } catch (error) {
+                console.error("There was an error fetching the data!", error);
+            }
+        };
+
+        fetchData();
+    }, []);
     return (
         <main className="app-content">
             <AppTitleComponent />
@@ -13,9 +87,9 @@ const AdminReportComponent = () => {
                     <div className="widget-small primary coloured-icon">
                         <i className="icon  bx bxs-user fa-3x" />
                         <div className="info">
-                            <h4>Tổng Nhân viên</h4>
+                            <h4>Tổng khách hàng</h4>
                             <p>
-                                <b>26 nhân viên</b>
+                                <b>{totalAccount} nhân viên</b>
                             </p>
                         </div>
                     </div>
@@ -26,7 +100,7 @@ const AdminReportComponent = () => {
                         <div className="info">
                             <h4>Tổng sản phẩm</h4>
                             <p>
-                                <b>8580 sản phẩm</b>
+                                <b>{totalProduct} sản phẩm</b>
                             </p>
                         </div>
                     </div>
@@ -37,7 +111,7 @@ const AdminReportComponent = () => {
                         <div className="info">
                             <h4>Tổng đơn hàng</h4>
                             <p>
-                                <b>457 đơn hàng</b>
+                                <b>{totalOrder} đơn hàng</b>
                             </p>
                         </div>
                     </div>
@@ -46,9 +120,9 @@ const AdminReportComponent = () => {
                     <div className="widget-small danger coloured-icon">
                         <i className="icon fa-3x bx bxs-info-circle" />
                         <div className="info">
-                            <h4>Bị cấm</h4>
+                            <h4>Bị khóa tài khoản</h4>
                             <p>
-                                <b>4 nhân viên</b>
+                                <b>2 tài khoản</b>
                             </p>
                         </div>
                     </div>
@@ -61,7 +135,7 @@ const AdminReportComponent = () => {
                         <div className="info">
                             <h4>Tổng thu nhập</h4>
                             <p>
-                                <b>104.890.000 đ</b>
+                                <b>{parseInt(totalAmount).toLocaleString('it-IT')} đ</b>
                             </p>
                         </div>
                     </div>
@@ -70,9 +144,9 @@ const AdminReportComponent = () => {
                     <div className="widget-small info coloured-icon">
                         <i className="icon fa-3x bx bxs-user-badge" />
                         <div className="info">
-                            <h4>Nhân viên mới</h4>
+                            <h4>Khách hàng mới</h4>
                             <p>
-                                <b>3 nhân viên</b>
+                                <b>3 khách hàng</b>
                             </p>
                         </div>
                     </div>
@@ -81,9 +155,9 @@ const AdminReportComponent = () => {
                     <div className="widget-small warning coloured-icon">
                         <i className="icon fa-3x bx bxs-tag-x" />
                         <div className="info">
-                            <h4>Hết hàng</h4>
+                            <h4>Sắp Hết hàng</h4>
                             <p>
-                                <b>1 sản phẩm</b>
+                                <b>{outOfStock.length} sản phẩm</b>
                             </p>
                         </div>
                     </div>
@@ -94,7 +168,7 @@ const AdminReportComponent = () => {
                         <div className="info">
                             <h4>Đơn hàng hủy</h4>
                             <p>
-                                <b>2 đơn hàng</b>
+                                <b>{cancelledOrdersCount} đơn hàng</b>
                             </p>
                         </div>
                     </div>
@@ -117,12 +191,14 @@ const AdminReportComponent = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>71304041</td>
-                                        <td>Bàn ăn mở rộng Vegas</td>
-                                        <td>21.550.000 đ</td>
-                                        <td>Bàn thông minh</td>
-                                    </tr>
+                                    {topSellingProducts.map((product, index) => (
+                                        <tr key={index}>
+                                            <td>{product.id}</td>
+                                            <td>{product.nameProduct}</td>
+                                            <td>{product.sizeColorProductsEntity[0].discountPrice.toLocaleString('it-IT')} đ</td>
+                                            <td>{product.categoryEntity.nameCategory}</td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         </div>
@@ -133,42 +209,7 @@ const AdminReportComponent = () => {
                 <div className="col-md-12">
                     <div className="tile">
                         <div>
-                            <h3 className="tile-title">TỔNG ĐƠN HÀNG</h3>
-                        </div>
-                        <div className="tile-body">
-                            <table className="table table-hover table-bordered responsive-table" id="sampleTable">
-                                <thead>
-                                    <tr>
-                                        <th>ID đơn hàng</th>
-                                        <th>Khách hàng</th>
-                                        <th>Đơn hàng</th>
-                                        <th>Số lượng</th>
-                                        <th>Tổng tiền</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>QY8723</td>
-                                        <td>Ngô Thái An</td>
-                                        <td>Giường ngủ Kara 1.6x2m</td>
-                                        <td>1 sản phẩm</td>
-                                        <td>14.500.000 đ</td>
-                                    </tr>
-                                    <tr>
-                                        <th colSpan={4}>Tổng cộng:</th>
-                                        <td>104.890.000 đ</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="row">
-                <div className="col-md-12">
-                    <div className="tile">
-                        <div>
-                            <h3 className="tile-title">SẢN PHẨM ĐÃ HẾT</h3>
+                            <h3 className="tile-title">SẢN PHẨM SẮP HẾT</h3>
                         </div>
                         <div className="tile-body">
                             <table className="table table-hover table-bordered responsive-table" id="sampleTable">
@@ -177,6 +218,7 @@ const AdminReportComponent = () => {
                                         <th>Mã sản phẩm</th>
                                         <th>Tên sản phẩm</th>
                                         <th>Ảnh</th>
+                                        <th>Màu sắc/Kích thước</th>
                                         <th>Số lượng</th>
                                         <th>Tình trạng</th>
                                         <th>Giá tiền</th>
@@ -184,19 +226,20 @@ const AdminReportComponent = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>83826226</td>
-                                        <td>Tủ ly - tủ bát</td>
-                                        <td>
-                                            <img src="/img-sanpham/tu.jpg" alt="" width="100px;" />
-                                        </td>
-                                        <td>0</td>
-                                        <td>
-                                            <span className="badge bg-danger">Hết hàng</span>
-                                        </td>
-                                        <td>2.450.000 đ</td>
-                                        <td>Tủ</td>
-                                    </tr>
+                                    {outOfStock.slice(0, 4).map((product, index) => (
+                                        <tr key={index}>
+                                            <td>{product.id}</td>
+                                            <td>{product.nameProduct}</td>
+                                            <td>
+                                                <img src={product.imageProductEntity[0].image} alt={product.nameProduct} style={{ width: '50px', height: '50px' }} />
+                                            </td>
+                                            <td>{product.sizeColorProductsEntity[0].color} / {product.sizeColorProductsEntity[0].size}</td>
+                                            <td>{product.sizeColorProductsEntity[0].inventoryEntity.quantity}</td>
+                                            <td>{product.sizeColorProductsEntity[0].inventoryEntity.quantity === 0 ? "Hết hàng" : "Còn hàng"}</td>
+                                            <td>{product.sizeColorProductsEntity[0].discountPrice.toLocaleString('it-IT')} đ</td>
+                                            <td>{product.categoryEntity.nameCategory}</td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         </div>
@@ -207,29 +250,31 @@ const AdminReportComponent = () => {
                 <div className="col-md-12">
                     <div className="tile">
                         <div>
-                            <h3 className="tile-title">NHÂN VIÊN MỚI</h3>
+                            <h3 className="tile-title">KHÁCH HÀNG MỚI</h3>
                         </div>
                         <div className="tile-body">
                             <table className="table table-hover table-bordered responsive-table" id="sampleTable">
                                 <thead>
                                     <tr>
+                                        <th>ID</th>
                                         <th>Họ và tên</th>
-                                        <th>Địa chỉ</th>
                                         <th>Ngày sinh</th>
-                                        <th>Giới tính</th>
+                                        <th>Địa chỉ</th>
                                         <th>SĐT</th>
                                         <th>Chức vụ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Nguyễn Đặng Trọng Nhân</td>
-                                        <td>59C Nguyễn Đình Chiểu, Quận 3, Hồ Chí Minh </td>
-                                        <td>23/07/1996</td>
-                                        <td>Nam</td>
-                                        <td>0846881155</td>
-                                        <td>Dịch vụ</td>
-                                    </tr>
+                                    {newCustomers.map((customer, index) => (
+                                        <tr key={index}>
+                                            <td>{customer.id}</td>
+                                            <td>{customer.accountName}</td>
+                                            <td>{new Date(customer.birthday).toLocaleDateString()}</td>
+                                            <td>{customer.address}</td>
+                                            <td>{customer.phone}</td>
+                                            <td>{customer.roles.map(role => role.name).join(', ')}</td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         </div>
@@ -237,11 +282,11 @@ const AdminReportComponent = () => {
                 </div>
             </div>
             <div className="row">
-            <div className="col-md-12 col-lg-6">
-                    <MonthlyDataChart />
+                <div className="col-md-12 col-lg-6">
+                    <RevenuePieChart />
                 </div>
                 <div className="col-md-12 col-lg-6">
-                    <SalesStatisticsChart />
+                    <RevenueChart />
                 </div>
             </div>
         </main>

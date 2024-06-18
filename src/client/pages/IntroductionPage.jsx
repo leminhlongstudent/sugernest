@@ -12,7 +12,7 @@ const IntroductionPage = () => {
                             <div className="col-xs-12 col-sm-12 col-md-12">
                                 <div className="heading-bar">
                                     <h1 className="title_page">
-                                        <a href="#">Giới thiệu</a>
+                                        <a>Giới thiệu</a>
                                     </h1>
                                 </div>
                                 <div className="content-page rte py-3">

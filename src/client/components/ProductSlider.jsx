@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import Slider from "react-slick";
 import ModalZoom from '../util/ModalZoom.jsx';
 import AddtoCart from './AddtoCart.jsx';
-import { IMAGE_BASE_URL } from '../services/ProductService.js';
 const ProductSlider = ({ product }) => {
     // Slider
     const [isProductInit, setIsProductInit] = useState(false);
@@ -82,8 +81,8 @@ const ProductSlider = ({ product }) => {
                                     <Slider {...settingsForThumbnails} id="gallery_02">
                                         {product.imageProductEntity.map((imageProduct, index) => (
                                             <div className={`item ${shiftIndex === index ? 'selected' : ''}`} key={index}>
-                                                <a onClick={() => handleButtonClickShift(index)} data-zoom-image={`${IMAGE_BASE_URL}`+imageProduct.image}>
-                                                    <img className="img-fluid" data-img={`${IMAGE_BASE_URL}`+imageProduct.image} src={`${IMAGE_BASE_URL}`+imageProduct.image} alt={`Image ${index}`} loading="lazy" />
+                                                <a onClick={() => handleButtonClickShift(index)} data-zoom-image={imageProduct.image}>
+                                                    <img className="img-fluid" data-img={imageProduct.image} src={imageProduct.image} alt={`Image ${index}`} loading="lazy" />
                                                 </a>
                                             </div>
                                         ))}
@@ -93,16 +92,16 @@ const ProductSlider = ({ product }) => {
                                     <Slider {...settingsForMainCarousel} id="gallery_1" afterChange={handleProductInit}>
                                         {product.imageProductEntity.map((imageProduct, index) => (
                                             <div className="item"
-                                                data-src={`${IMAGE_BASE_URL}`+imageProduct.image} key={index}>
+                                                data-src={imageProduct.image} key={index}>
                                                 <a onClick={() => handleImageClick(index)} className="d-block pos-relative embed-responsive embed-responsive-1by1">
                                                     <picture>
                                                         <source media="(max-width: 480px)"
-                                                            srcSet={`${IMAGE_BASE_URL}`+imageProduct.image} />
+                                                            srcSet={imageProduct.image} />
                                                         <img loading="lazy" className=" img-fluid" style={{ '--image-scale': '1', cursor: "pointer" }}
-                                                            data-img={`${IMAGE_BASE_URL}`+imageProduct.image}
-                                                            src={`${IMAGE_BASE_URL}`+imageProduct.image}
-                                                            alt={`${IMAGE_BASE_URL}`+imageProduct.image} width="600" height="600"
-                                                            data-src={`${IMAGE_BASE_URL}`+imageProduct.image} />
+                                                            data-img={imageProduct.image}
+                                                            src={imageProduct.image}
+                                                            alt={imageProduct.image} width="600" height="600"
+                                                            data-src={imageProduct.image} />
                                                     </picture>
                                                 </a>
                                             </div>

@@ -1006,6 +1006,20 @@ a.quickview-close.close-window:hover {
 .modal-content {
     animation: fadeIn 0.5s; /* Sử dụng hiệu ứng fade in */
 }
+#search-header {
+    position: relative; /* Đặt thẻ cha có position: relative */
+}
+
+.search-results-card {
+    position: absolute; /* Đặt thẻ cần định vị tuyệt đối */
+    top: 100%; /* Đặt vị trí theo ý muốn */
+    left: 0;
+    right: 0;
+    z-index: 10; /* Đảm bảo thẻ này nằm trên các thẻ khác */
+    margin-top: 15px; /* Khoảng cách phía trên thẻ */
+    border-radius: 5px;
+}
+
 
 
 

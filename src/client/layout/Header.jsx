@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import './layout.css'
 import Sidebar from './Sidebar.jsx'
-import { IMAGE_BASE_URL, REST_API_BASE_URL } from '../services/ProductService.js';
+import { REST_API_BASE_URL } from '../services/ProductService.js';
+import { hasPermission } from '../services/AuthService.js';
+import SearchBar from '../components/SearchBar.jsx';
 
 const Header = () => {
   const [cart, setCart] = useState([]);
@@ -14,9 +16,36 @@ const Header = () => {
   const { user, logout, token } = useAuth();
   const { updateCart } = useCart();
   const [cartTotal, setCartTotal] = useState(0);
+  const [checkPermission, setCheckPermission] = useState(false);
+
+  const [mobileMenu, setMobileMenu] = useState(false);
+  const mobileMenuRef = useRef(null);
+
+  const toggleMobileMenu = () => {
+    setMobileMenu(!mobileMenu);
+  };
+
+  const handleClickOutside = (event) => {
+    if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
+      setMobileMenu(false);
+    }
+  };
+
+  useEffect(() => {
+    if (mobileMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [mobileMenu]);
 
   useEffect(() => {
     if (user && user.id) {
+      setCheckPermission(hasPermission('ADMIN_PANEL'));
       axios.get(`${REST_API_BASE_URL}/carts/total-items/${user.id}`, {
         headers: {
           "Authorization": `Bearer ${token}`
@@ -67,6 +96,13 @@ const Header = () => {
         console.error("There was an error removing the cart item:", error);
       });
   };
+
+  function getLogout() {
+    setCheckPermission(false);
+    logout();
+    navigator(`/`);
+  }
+
   function getHomePage() {
     navigator(`/`);
   }
@@ -86,15 +122,21 @@ const Header = () => {
   function getOrders() {
     navigator(`/orders`);
   }
+  function getAdmin() {
+    window.location.href = `/admin`;
+  }
+  function getProduct() {
+    navigator(`/products`);
+  }
 
   return (
     <div>
       <div className="top-banner position-relative" style={{ background: '#a50a06' }}>
         <div className="container text-center px-0">
-          <a className="position-relative  d-sm-none d-block" style={{ maxHeight: '78px', height: 'calc( 78 * 100vw /828 )' }} href="/collections/all" title="Khuyến mãi">
+          <a className="position-relative  d-sm-none d-block" style={{ maxHeight: '78px', height: 'calc( 78 * 100vw /828 )' }} onClick={getProduct} title="Khuyến mãi">
             <img className="img-fluid position-absolute " src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/top_banner_mb.jpg?1704435927037" style={{ left: 0 }} alt="Khuyến mãi" width="828" height="78" />
           </a>
-          <a className="position-relative d-sm-block d-none " style={{ maxHeight: '44px', height: 'calc(44 * 100vw /1200)' }} href="/collections/all" title="Khuyến mãi">
+          <a className="position-relative d-sm-block d-none " style={{ maxHeight: '44px', height: 'calc(44 * 100vw /1200)' }} onClick={getProduct} title="Khuyến mãi">
             <picture>
               <source media="(max-width: 480px)" srcSet="//bizweb.dktcdn.net/thumb/large/100/419/628/themes/897067/assets/top_banner.jpg?1704435927037" />
               <img className="img-fluid position-absolute" src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/top_banner.jpg?1704435927037" style={{ left: 0 }} alt="Khuyến mãi" width="1200" height="44" />
@@ -104,13 +146,75 @@ const Header = () => {
         </div>
       </div>
       <header className="header header_menu">
+        {mobileMenu && (
+          <div id="mobile-menu" className="scroll active" ref={mobileMenuRef}>
+            <div className="media d-flex user-menu">
+              <i className="fas fa-user-circle mr-3 align-self-center" />
+              <div className="media-body d-md-flex flex-column ">
+                <a
+                  rel="nofollow"
+                  onClick={handleClick}
+                  className="d-block"
+                  title="Tài khoản"
+                >
+                  Tài khoản
+                </a>
+                {user && (
+                  <small>
+                    <a
+                      title="{user.fullName}"
+                      className="font-weight: light"
+                    >
+                      {user.fullName}
+                    </a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a
+                      onClick={getLogout}
+                      title="{user.fullName}"
+                      className="font-weight: light">
+                      Đăng xuất
+                    </a>
+                  </small>
+                )}
+                {!user && (
+                  <small>
+                    <a
+                      onClick={handleClick}
+                      title="Đăng nhập"
+                      className="font-weight: light"
+                    >
+                      Đăng nhập
+                    </a>
+                  </small>
+                )}
+              </div>
+            </div>
+            <Sidebar />
+            <div className="mobile-menu-footer border-top w-100 d-flex align-items-center text-center">
+              <div className="hotline  w-50   p-2 ">
+                <a href="tel:19006760" title={19006760}>
+                  Gọi điện <i className="fas fa-phone ml-3" />
+                </a>
+              </div>
+              <div className="messenger border-left p-2 w-50 border-left">
+                <a
+                  href="https://www.messenger.com/t/100024390078063"
+                  title="https://www.messenger.com/t/100024390078063"
+                >
+                  Nhắn tin
+                  <i className="fab fa-facebook-messenger ml-3" />
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="mid-header wid_100 d-flex align-items-center">
           <div className="container">
             <div className="row align-items-center position-relative">
               <div className=' col-12 header-main'>
                 <div className='row align-items-center'>
                   <div className="col-4 d-lg-none menu-mobile">
-                    <div className="toggle-nav btn menu-bar mr-4 ml-0 p-0 d-lg-none d-flex text-white">
+                    <div onClick={toggleMobileMenu} className="toggle-nav btn menu-bar mr-4 ml-0 p-0 d-lg-none d-flex text-white">
                       <span className="bar"></span>
                       <span className="bar"></span>
                       <span className="bar"></span>
@@ -141,22 +245,7 @@ const Header = () => {
                         alt="logo EGA Cake" width="187" height="50" />
                     </a>
                   </div>
-                  <div className="col-lg-5 col-12 header-center px-lg-0" id="search-header">
-                    <form action="/search" method="get" className="input-group search-bar custom-input-group "
-                      role="search">
-                      <input type="text" name="query" autoComplete="off"
-                        className="input-group-field auto-search form-control " required=""
-                        data-placeholder="Bạn cần tìm gì..; Nhập tên sản phẩm.." />
-                      <input type="hidden" name="type" />
-                      <span className="input-group-btn btn-action">
-                        <button type="submit" aria-label="search"
-                          className="btn text-white icon-fallback-text h-100">
-                          <i className="fa fa-search" aria-hidden="true"></i></button>
-                      </span>
-                    </form>
-                    <div className="search-overlay">
-                    </div>
-                  </div>
+                  <SearchBar />
                   <div className="col-4 col-lg-4 menu-cart">
                     <ul
                       className="header-right mb-0 list-unstyled d-flex align-items-center justify-content-end">
@@ -196,10 +285,14 @@ const Header = () => {
                               alt="account_icon"
                               className="align-self-center"
                             />
+                            {checkPermission && (
+                              <i onClick={() => getAdmin()} className="fa fa-cog" aria-hidden="true" title="Truy cập vào quản trị viên"></i>
+                            )}
                             <span className='d-none d-xl-block mt-1'>{user ? user.fullName : 'Tài khoản'}</span>
+
                           </a>
                           {user && (
-                            <button onClick={logout} className="logout-button">Đăng xuất
+                            <button onClick={() => getLogout()} className="logout-button">Đăng xuất
                             </button>
                           )}
                         </div>
@@ -225,13 +318,13 @@ const Header = () => {
                                       <div className="border_list">
                                         <div className="image_drop">
                                           <a className="product-image pos-relative embed-responsive embed-responsive-1by1" onClick={() => getProduct(item.productEntity.id)} title={item.productEntity.nameProduct}>
-                                            <img alt="Heavy Duty Paper Car" src={`${IMAGE_BASE_URL}` + item.productEntity.imageProductEntity[0].image} width="100" />
+                                            <img alt="Heavy Duty Paper Car" src={item.productEntity.imageProductEntity[0].image} width="100" />
                                           </a>
                                         </div>
                                         <div className="detail-item">
                                           <div className="product-details">
                                             <span title="Xóa" onClick={() => deleteCartItem(item.id)} className="remove-item-cart fa fa-times"></span>
-                                            <p className="product-name"> <a href="/heavy-duty-paper-car" title="Heavy Duty Paper Car">{item.productEntity.nameProduct}</a></p>
+                                            <p className="product-name"> <a onClick={() => getProduct(item.productEntity.id)} title="Heavy Duty Paper Car">{item.productEntity.nameProduct}</a></p>
                                           </div>
                                           <span className="variant-title">{item.productSize} / {item.productColor}</span>
                                           <div className="product-details-bottom">

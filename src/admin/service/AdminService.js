@@ -1,8 +1,6 @@
 import axios from "axios";
 
 export const REST_API_BASE_URL = "https://sugarbackend.onrender.com/sugarnest/v0.1";
-export const IMAGE_BASE_URL = "https://sugarbackend.onrender.com/sugarnest/v0.1/images/";
-
 
 export const loginToken = (accountName, password) => axios.post(`${REST_API_BASE_URL}/auth/login`, { accountName, password });
 export const hasPermission = (requiredPermission) => {

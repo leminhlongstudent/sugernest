@@ -34,7 +34,7 @@ const ContactPage = () => {
                                         <a
                                             title="support@sapo.vn"
                                             className="link"
-                                            href="mailto:support@sapo.vn"
+                                            href="mailto:leminhlongit@gmail.com"
                                         >
                                             leminhlongit@gmail.com
                                         </a>

@@ -533,7 +533,7 @@ a.link:hover {
 		left: auto;
 		right: -10px;
 	}
-	.slick-list{
+	.dis_slider{
 		display: none;
 	}
 }

@@ -2,7 +2,6 @@ import React from 'react'
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ProductSlider from './ProductSlider.jsx';
-import { IMAGE_BASE_URL } from '../services/ProductService.js';
 
 const ItemProductComponent = ({ product }) => {
     const modalRef = useRef(null);
@@ -39,13 +38,13 @@ const ItemProductComponent = ({ product }) => {
                                 <img loading="lazy"
                                     className='product-thumbnail__img product-thumbnail__img--primary'
                                     width="480" height="480" style={{ '--image-scale': '1' }}
-                                    src={`${IMAGE_BASE_URL}` + product.imageProductEntity[0].image}
-                                    alt={`${IMAGE_BASE_URL}` + product.imageProductEntity[0].image} />
+                                    src={product.imageProductEntity[0].image}
+                                    alt={ product.imageProductEntity[0].image} />
                                 <img loading="lazy"
                                     className='product-thumbnail__img product-thumbnail__img--secondary'
                                     width="480" height="480" style={{ '--image-scale': '1' }}
-                                    src={`${IMAGE_BASE_URL}` + product.imageProductEntity[1].image}
-                                    alt={`${IMAGE_BASE_URL}` + product.imageProductEntity[0].image} />
+                                    src={product.imageProductEntity[1].image}
+                                    alt={product.imageProductEntity[0].image} />
                             </a>
                             <div className="label_product d-none">
                                 <div className="label_wrapper">

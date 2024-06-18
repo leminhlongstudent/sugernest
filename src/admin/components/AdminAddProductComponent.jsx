@@ -280,22 +280,22 @@ const AdminAddProductComponent = () => {
                 const formData = new FormData();
                 formData.append('file', mainImage);
 
-                const response = await axios.post(`${REST_API_BASE_URL}/uploadFile`, formData, {
+                const response = await axios.post(`${REST_API_BASE_URL}/images/upload`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                 });
 
-                mainImageUrl = response.data.result;
+                mainImageUrl = response.data;
             }
 
             for (const file of descriptionImages) {
                 const formData = new FormData();
                 formData.append('file', file);
 
-                const response = await axios.post(`${REST_API_BASE_URL}/uploadFile`, formData, {
+                const response = await axios.post(`${REST_API_BASE_URL}/images/upload`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                 });
 
-                descriptionImageUrls.push(response.data.result);
+                descriptionImageUrls.push(response.data);
             }
 
             return { mainImageUrl, descriptionImageUrls };

@@ -1,6 +1,11 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
 const Breadcrumb = ({page}) => {
+    const navigate = useNavigate();
+    function getHomePage() {
+        navigate('/');
+    }
     return (
         <div> <section className="bread-crumb mb-0">
             <span className="crumb-border"></span>
@@ -9,7 +14,7 @@ const Breadcrumb = ({page}) => {
                     <div className="col-12 a-left">
                         <ul className="breadcrumb m-0 px-0 py-2">
                             <li className="home">
-                                <a href="/products" className='link'><span>Trang chủ</span></a>
+                                <a onClick={()=>getHomePage()} className='link'><span>Trang chủ</span></a>
                                 <span className="mr_lr">&nbsp;/&nbsp;</span>
                             </li>
                             <li>

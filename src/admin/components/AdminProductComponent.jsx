@@ -7,7 +7,7 @@ import axios from 'axios';
 import ReusableTableComponent from './ReusableTableComponent';
 import EmlementButtonComponent from './EmlementButtonComponent';
 import AppTitleComponent from './AppTitleComponent';
-import { IMAGE_BASE_URL, REST_API_BASE_URL } from '../service/AdminService';
+import { REST_API_BASE_URL } from '../service/AdminService';
 
 const AdminProductComponent = () => {
   const navigate = useNavigate();
@@ -121,7 +121,7 @@ const AdminProductComponent = () => {
       title: 'Ảnh',
       dataIndex: 'image',
       key: 'image',
-      render: (text) => <img className="img-card-person" src={`${IMAGE_BASE_URL}`+text} alt="" />,
+      render: (text) => <img className="img-card-person" src={text} alt="" />,
     },
     {
       title: 'Tình trạng',

@@ -1,8 +1,6 @@
 import axios from "axios";
 
 export const REST_API_BASE_URL = "https://sugarbackend.onrender.com/sugarnest/v0.1";
-export const IMAGE_BASE_URL = "https://sugarbackend.onrender.com/sugarnest/v0.1/images/";
-
 
 export const listProducts = (page) => axios.get(`${REST_API_BASE_URL}/products?page=${page}`);
 export const getProduct = (id) => axios.get(`${REST_API_BASE_URL}/products/${id}`);

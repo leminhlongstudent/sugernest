@@ -62,7 +62,7 @@ const HomePage = () => {
             </div>
           </div>
           <div className="col-lg-9 col-12 pl-xl-0">
-            <section className="section section_slider awe-section-1 mt-2">
+            <section className="section section_slider awe-section-1 mt-2 dis_slider">
               <div className="section_slider clearfix" style={{ maxHeight: '371px' }}>
                 <div className="home-slider">
                   <Slider {...settingsForMainCarousel}>
@@ -283,7 +283,7 @@ const HomePage = () => {
             </section>
             <section className="section section_banner awe-section-6">
               <div className="section_banner_adv">
-                <a className="banner" href="/collections/all" title="Teabreak">
+                <a className="banner" title="Teabreak">
                   <picture>
                     <source media="(max-width: 600px)"
                       srcSet="//bizweb.dktcdn.net/thumb/grande/100/419/628/themes/897067/assets/section_hot_banner.png?1704435927037" />

@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import LikeButtonComponent from './LikeButtonComponent.jsx';
 import ProductRating from './ProductRating.jsx';
 import { REST_API_BASE_URL } from '../services/ProductService.js';
+import Swal from 'sweetalert2';
 
 const AddtoCart = ({ product }) => {
     const navigate = useNavigate();
@@ -22,6 +23,7 @@ const AddtoCart = ({ product }) => {
     const [oldListPrice, setOldListPrice] = useState(0);
     const [oldDiscountPrice, setOldPrice] = useState(0);
     const [oldDiscount, setOldDiscount] = useState(0);
+    const [oldQuantity, setOldQuantity] = useState(0);
 
     useEffect(() => {
         if (product.sizeColorProductsEntity.length > 0) {
@@ -80,9 +82,11 @@ const AddtoCart = ({ product }) => {
                 setOldPrice(selectedProduct.discountPrice);
                 setOldListPrice(selectedProduct.listPrice);
                 setOldDiscount(selectedProduct.discount);
+                setOldQuantity(selectedProduct.inventoryEntity.quantity);
             }
         }
     };
+
 
     useEffect(() => {
         if (selectedSizeOption && selectedColorOption) {
@@ -112,6 +116,14 @@ const AddtoCart = ({ product }) => {
                 productSize: selectedSizeOption,
                 productColor: selectedColorOption
             };
+            if (cartItem.quantity > oldQuantity) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Số lượng sản phẩm không đủ',
+                    text: 'Vui lòng chọn số lượng sản phẩm nhỏ hơn hoặc bằng số lượng hiện có',
+                });
+                return;
+            }
 
             axios.post(`${REST_API_BASE_URL}/carts/add-item`, cartItem, {
                 headers: {
@@ -155,10 +167,10 @@ const AddtoCart = ({ product }) => {
                     </span>
                 </div>
                 <div className="price-box">
-                    <span className="special-price"><span className="price product-price">{parseInt(oldListPrice).toLocaleString('it-IT')}₫</span>
+                    <span className="special-price"><span className="price product-price">{parseInt(oldDiscountPrice).toLocaleString('it-IT')}₫</span>
                     </span>
                     <span className="old-price">
-                        <del className="product-price-old sale">{parseInt(oldDiscountPrice).toLocaleString('it-IT')}₫</del>
+                        <del className="product-price-old sale">{parseInt(oldListPrice).toLocaleString('it-IT')}₫</del>
                     </span>
 
                     <div className="label_product">
@@ -228,6 +240,10 @@ const AddtoCart = ({ product }) => {
                     </div>
                     <div className="form_button_details w-100">
                         <div className="form_product_content type1 ">
+                            <div className="swatch clearfix" data-option-index="0">
+                                <div className="header">Còn: {oldQuantity} sản phẩm</div>
+
+                            </div>
                             <div className="swatch clearfix" data-option-index="0">
                                 <div className="header">Kích thước:</div>
                                 {[...uniqueSizes].map((size, index) => (

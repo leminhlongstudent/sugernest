@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { IMAGE_BASE_URL, getProduct, getRecommendedProducts } from '../services/ProductService.js';
+import {getProduct, getRecommendedProducts } from '../services/ProductService.js';
 import ProductSlider from '../components/ProductSlider.jsx';
 import Breadcrumb from '../components/Breadcrumb.jsx';
 import Blog from '../components/Blog.jsx';
@@ -74,7 +74,7 @@ const ProductDetailComponent = () => {
                             <div className="related-product">
                                 <div className="title_module heading-bar d-flex justify-content-between align-items-center" style={{ backgroundColor: "#2d2d2d" }}>
                                     <h2 className="bf_flower heading-bar__title" tyle={{ color: "#ffffff" }}>
-                                        <a href="/banh-kem-tiramisu" title="SẢN PHẨM THƯỜNG MUA CÙNG">
+                                        <a onClick={() => navigate(`/products/${product.categoryEntity.nameCategory}`)} title="SẢN PHẨM THƯỜNG MUA CÙNG">
                                             SẢN PHẨM THƯỜNG MUA CÙNG
                                         </a>
                                     </h2>
@@ -114,7 +114,7 @@ const ProductDetailComponent = () => {
                                     <p>&nbsp;</p>
                                     <p style={{ textAlign: 'center' }}>
                                         <img loading="lazy" alt={product.nameProduct}
-                                            src={product.imageProductEntity.length > 0 ? `${IMAGE_BASE_URL}` + product.imageProductEntity[0].image : ""} />
+                                            src={product.imageProductEntity.length > 0 ? product.imageProductEntity[0].image : ""} />
                                     </p>
                                     <p><span style={{ fontSize: '16px' }}><strong>HƯỚNG DẪN ĐẶT HÀNG ONLINE</strong></span></p>
                                     <p style={{ textAlign: 'center' }}>

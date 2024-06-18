@@ -29,15 +29,16 @@ const LoginPage = () => {
     function getRegisterPage() {
         navigate('/register')
     }
+    function getForgotPasswordPage() {
+        navigate('/forgot-password')
+    }
     const handleFacebookLogin = () => {
-        // Redirect the user to your backend OAuth endpoint for Facebook
         window.location.href = `${REST_API_BASE_URL}/oauth2/authorization/facebook`;
-      };
+    };
 
-      const handleGoogleLogin = () => {
-        // Redirect the user to your backend OAuth endpoint
+    const handleGoogleLogin = () => {
         window.location.href = `${REST_API_BASE_URL}/oauth2/authorization/google`;
-      };
+    };
 
     return (
         <>
@@ -73,7 +74,7 @@ const LoginPage = () => {
                                                 name="FormType"
                                                 type="hidden"
                                             />
-                                            <input name="utf8" type="hidden"/>
+                                            <input name="utf8" type="hidden" />
                                             <div
                                                 className="form-signup margin-bottom-15"
                                                 style={{ color: "red" }}
@@ -113,7 +114,7 @@ const LoginPage = () => {
                                                     <small className="d-block my-2">
                                                         Quên mật khẩu? Nhấn vào
                                                         <a
-                                                            href="#"
+                                                            onClick={getForgotPasswordPage}
                                                             className="btn-link-style text-primary"
                                                         >
                                                             {" "}
@@ -132,55 +133,6 @@ const LoginPage = () => {
                                                     </button>
                                                     {error && <div style={{ color: 'red' }}>{error}</div>}
                                                 </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div
-                                        id="recover-password"
-                                        style={{ display: "none" }}
-                                        className="form-signup page-login text-center"
-                                    >
-                                        <h2>Đặt lại mật khẩu</h2>
-                                        <p>
-                                            Chúng tôi sẽ gửi cho bạn một email để kích hoạt việc đặt lại mật
-                                            khẩu.
-                                        </p>
-                                        <form
-                                            method="post"
-                                            action="/account/recover"
-                                            id="recover_customer_password"
-                                            acceptCharset="UTF-8"
-                                        >
-                                            <input
-                                                name="FormType"
-                                                type="hidden"
-                                            />
-                                            <input name="utf8" type="hidden" />
-                                            <div className="form-signup" style={{ color: "red" }}></div>
-                                            <div className="form-signup clearfix">
-                                                <fieldset className="form-group">
-                                                    <input
-                                                        type="email"
-                                                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$"
-                                                        className="form-control form-control-lg"
-                                                        name="Email"
-                                                        id="recover-email"
-                                                        placeholder="Email"
-                                                        required=""
-                                                    />
-                                                </fieldset>
-                                            </div>
-                                            <div className="action_bottom my-3">
-                                                <input
-                                                    className="btn btn-style btn-recover btn-block"
-                                                    type="submit"
-                                                />
-                                                <a
-                                                    href="#"
-                                                    className="btn btn-style link btn-style-active "
-                                                >
-                                                    Quay lại
-                                                </a>
                                             </div>
                                         </form>
                                     </div>
