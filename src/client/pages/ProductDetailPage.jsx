@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {getProduct, getRecommendedProducts } from '../services/ProductService.js';
+import { getProduct, getRecommendedProducts } from '../services/ProductService.js';
 import ProductSlider from '../components/ProductSlider.jsx';
 import Breadcrumb from '../components/Breadcrumb.jsx';
 import Blog from '../components/Blog.jsx';
@@ -15,6 +15,7 @@ const ProductDetailComponent = () => {
     const [recommendedProducts, setRecommendedProducts] = useState([]);
     const navigate = useNavigate();
     const { id } = useParams();
+
     useEffect(() => {
         if (id) {
             getProduct(id).then((res) => {
@@ -22,15 +23,18 @@ const ProductDetailComponent = () => {
             }).catch((err) => {
                 console.log(err);
             });
+        }
+    }, [id]);
 
-            getRecommendedProducts(1, 8).then((res) => {
+    useEffect(() => {
+        if (product && product.categoryEntity) {
+            getRecommendedProducts(product.categoryEntity.id, 4).then((res) => {
                 setRecommendedProducts(res.data.result);
-            }
-            ).catch((err) => {
+            }).catch((err) => {
                 console.log(err);
             });
         }
-    }, [id]);
+    }, [product]);
 
     const handleSeeMoreClick = (event) => {
         const seeMore = event.currentTarget;
