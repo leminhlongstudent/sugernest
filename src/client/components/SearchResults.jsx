@@ -61,23 +61,25 @@ const SearchResults = () => {
                             </div>
                             <div className="section pagenav">
                                 <nav className="clearfix relative nav_pagi w_100">
-                                    <ul className="pagination clearfix float-right">
-                                        {currentPage !== 1 && (
-                                            <li className="page-item">
-                                                <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}><i className="fa fa-angle-left"></i></button>
-                                            </li>
-                                        )}
-                                        {[...Array(totalPages)].map((_, i) => (
-                                            <li key={i} className={currentPage === i + 1 ? "active page-item disabled" : "page-item"}>
-                                                <button className="page-link" onClick={() => handlePageChange(i + 1)}>{i + 1}</button>
-                                            </li>
-                                        ))}
-                                        {currentPage !== totalPages && (
-                                            <li className="page-item">
-                                                <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}><i className="fa fa-angle-right" aria-hidden="true"></i></button>
-                                            </li>
-                                        )}
-                                    </ul>
+                                    {totalPages > 1 && (
+                                        <ul className="pagination clearfix float-right">
+                                            {currentPage !== 1 && (
+                                                <li className="page-item">
+                                                    <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}><i className="fa fa-angle-left"></i></button>
+                                                </li>
+                                            )}
+                                            {[...Array(totalPages)].map((_, i) => (
+                                                <li key={i} className={currentPage === i + 1 ? "active page-item disabled" : "page-item"}>
+                                                    <button className="page-link" onClick={() => handlePageChange(i + 1)}>{i + 1}</button>
+                                                </li>
+                                            ))}
+                                            {currentPage !== totalPages && (
+                                                <li className="page-item">
+                                                    <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}><i className="fa fa-angle-right" aria-hidden="true"></i></button>
+                                                </li>
+                                            )}
+                                        </ul>
+                                    )}
                                 </nav>
                             </div>
                         </div>

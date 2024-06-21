@@ -39,9 +39,6 @@ const SearchBar = () => {
         setShowResults(false);
     };
 
-
-
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -73,7 +70,7 @@ const SearchBar = () => {
     };
 
     const formatCurrency = (price) => {
-        return `$${price.toFixed(2)}`;
+        return `${parseInt(price).toLocaleString('it-IT')}đ`;
     };
     const handleFormSubmit = (event) => {
         event.preventDefault()
@@ -90,7 +87,7 @@ const SearchBar = () => {
                     autoComplete="off"
                     className="input-group-field auto-search form-control"
                     required
-                    placeholder="Bạn cần tìm gì...;"
+                    placeholder="Bạn cần tìm gì?"
                     value={searchQuery}
                     onChange={handleInputChange}
                 />

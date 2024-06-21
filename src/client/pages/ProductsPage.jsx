@@ -19,33 +19,30 @@ const ProductsPage = () => {
     const [priceRange, setPriceRange] = useState([0, 2000000]);
     const [sortOption, setSortOption] = useState('id:asc');
 
-    useEffect(() => {
-        fetchProducts();
-    }, [currentPage, selectedSuppliers, selectedCategories, priceRange, sortOption]);
-
     const fetchProducts = async () => {
         try {
+            const categoryParams = category && !selectedCategories.includes(category)
+                ? [...selectedCategories, category]
+                : selectedCategories;
+
             const response = await axios.get(`${REST_API_BASE_URL}/products`, {
                 params: {
                     page: currentPage - 1,
                     size: 12,
                     suppliers: selectedSuppliers.join(','),
-                    categories: selectedCategories.join(','),
+                    categories: categoryParams.join(','),
                     minPrice: priceRange[0],
                     maxPrice: priceRange[1],
                     sortBy: sortOption.split(':')[0],
                     sortDirection: sortOption.split(':')[1].toUpperCase()
                 }
             });
+
             setProducts(response.data.content);
             setTotalPages(response.data.totalPages);
         } catch (error) {
             console.error('Error fetching products:', error);
         }
-    };
-
-    const handlePageChange = (newPage) => {
-        setCurrentPage(newPage);
     };
 
     const fetchSuppliers = async () => {
@@ -79,6 +76,14 @@ const ProductsPage = () => {
         fetchSuppliers();
     }, []);
 
+    useEffect(() => {
+        fetchProducts();
+    }, [currentPage, selectedSuppliers, selectedCategories, sortOption]);
+
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+    };
+
     const handleSupplierChange = (supplier) => {
         setSelectedSuppliers((prev) =>
             prev.includes(supplier) ? prev.filter((s) => s !== supplier) : [...prev, supplier]
@@ -91,18 +96,16 @@ const ProductsPage = () => {
         );
     };
 
-    useEffect(() => {
-        if (category && !selectedCategories.includes(category)) {
-            setSelectedCategories((prev) => [...prev, category]);
-        }
-    }, [category]);
-
     const handleSortChange = (e) => {
         setSortOption(e.target.value);
     };
 
     const handleSliderChange = (values) => {
         setPriceRange(values);
+    };
+
+    const handleMouseUpOrTouchEnd = () => {
+        fetchProducts();
     };
 
     return (
@@ -215,60 +218,65 @@ const ProductsPage = () => {
                                                         </h2>
                                                     </div>
                                                     <div className="aside-content filter-group scroll">
-                                                        <Range
-                                                            values={priceRange}
-                                                            step={50000}
-                                                            min={0}
-                                                            max={2000000}
-                                                            onChange={handleSliderChange}
-                                                            renderTrack={({ props, children }) => (
-                                                                <div
-                                                                    {...props}
-                                                                    style={{
-                                                                        ...props.style,
-                                                                        height: '6px',
-                                                                        width: '100%',
-                                                                        background: getTrackBackground({
-                                                                            values: priceRange,
-                                                                            colors: ['#ccc', '#548BF4', '#ccc'],
-                                                                            min: 0,
-                                                                            max: 2000000
-                                                                        }),
-                                                                        margin: '20px 0'
-                                                                    }}
-                                                                >
-                                                                    {children}
-                                                                </div>
-                                                            )}
-                                                            renderThumb={({ props, isDragged }) => (
-                                                                <div
-                                                                    {...props}
-                                                                    style={{
-                                                                        ...props.style,
-                                                                        height: '20px',
-                                                                        width: '20px',
-                                                                        borderRadius: '50%',
-                                                                        backgroundColor: '#FFF',
-                                                                        border: '1px solid #CCC',
-                                                                        display: 'flex',
-                                                                        justifyContent: 'center',
-                                                                        alignItems: 'center',
-                                                                        boxShadow: '0px 2px 6px #AAA'
-                                                                    }}
-                                                                >
+                                                        <div
+                                                            onMouseUp={handleMouseUpOrTouchEnd}
+                                                            onTouchEnd={handleMouseUpOrTouchEnd}
+                                                        >
+                                                            <Range
+                                                                values={priceRange}
+                                                                step={50000}
+                                                                min={0}
+                                                                max={2000000}
+                                                                onChange={handleSliderChange}
+                                                                renderTrack={({ props, children }) => (
                                                                     <div
+                                                                        {...props}
                                                                         style={{
-                                                                            height: '10px',
-                                                                            width: '10px',
-                                                                            backgroundColor: isDragged ? '#548BF4' : '#CCC'
+                                                                            ...props.style,
+                                                                            height: '6px',
+                                                                            width: '100%',
+                                                                            background: getTrackBackground({
+                                                                                values: priceRange,
+                                                                                colors: ['#ccc', '#548BF4', '#ccc'],
+                                                                                min: 0,
+                                                                                max: 2000000
+                                                                            }),
+                                                                            margin: '20px 0'
                                                                         }}
-                                                                    />
-                                                                </div>
-                                                            )}
-                                                        />
+                                                                    >
+                                                                        {children}
+                                                                    </div>
+                                                                )}
+                                                                renderThumb={({ props, isDragged }) => (
+                                                                    <div
+                                                                        {...props}
+                                                                        style={{
+                                                                            ...props.style,
+                                                                            height: '20px',
+                                                                            width: '20px',
+                                                                            borderRadius: '50%',
+                                                                            backgroundColor: '#FFF',
+                                                                            border: '1px solid #CCC',
+                                                                            display: 'flex',
+                                                                            justifyContent: 'center',
+                                                                            alignItems: 'center',
+                                                                            boxShadow: '0px 2px 6px #AAA'
+                                                                        }}
+                                                                    >
+                                                                        <div
+                                                                            style={{
+                                                                                height: '10px',
+                                                                                width: '10px',
+                                                                                backgroundColor: isDragged ? '#548BF4' : '#CCC'
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                )}
+                                                            />
+                                                        </div>
                                                         <p>
-                                                            <label htmlFor="amount">Giá:</label>
-                                                            <span id="amount">
+                                                            <label >Giá:</label>
+                                                            <span>
                                                                 {priceRange[0].toLocaleString('vi-VN')}₫ - {priceRange[1].toLocaleString('vi-VN')}₫
                                                             </span>
                                                         </p>
@@ -325,23 +333,25 @@ const ProductsPage = () => {
                                         </div>
                                         <div className="section pagenav">
                                             <nav className="clearfix relative nav_pagi w_100">
-                                                <ul className="pagination clearfix float-right">
-                                                    {currentPage !== 1 && (
-                                                        <li className="page-item">
-                                                            <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}><i className="fa fa-angle-left"></i></button>
-                                                        </li>
-                                                    )}
-                                                    {[...Array(totalPages)].map((_, i) => (
-                                                        <li key={i} className={currentPage === i + 1 ? "active page-item disabled" : "page-item"}>
-                                                            <button className="page-link" onClick={() => handlePageChange(i + 1)}>{i + 1}</button>
-                                                        </li>
-                                                    ))}
-                                                    {currentPage !== totalPages && (
-                                                        <li className="page-item">
-                                                            <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}><i className="fa fa-angle-right" aria-hidden="true"></i></button>
-                                                        </li>
-                                                    )}
-                                                </ul>
+                                                {totalPages > 1 && (
+                                                    <ul className="pagination clearfix float-right">
+                                                        {currentPage !== 1 && (
+                                                            <li className="page-item">
+                                                                <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}><i className="fa fa-angle-left"></i></button>
+                                                            </li>
+                                                        )}
+                                                        {[...Array(totalPages)].map((_, i) => (
+                                                            <li key={i} className={currentPage === i + 1 ? "active page-item disabled" : "page-item"}>
+                                                                <button className="page-link" onClick={() => handlePageChange(i + 1)}>{i + 1}</button>
+                                                            </li>
+                                                        ))}
+                                                        {currentPage !== totalPages && (
+                                                            <li className="page-item">
+                                                                <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}><i className="fa fa-angle-right" aria-hidden="true"></i></button>
+                                                            </li>
+                                                        )}
+                                                    </ul>
+                                                )}
                                             </nav>
                                         </div>
                                     </div>

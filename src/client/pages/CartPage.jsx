@@ -9,11 +9,41 @@ import Swal from 'sweetalert2';
 
 
 const CartPage = () => {
+   const navigate = useNavigate();
    const [cart, setCart] = useState([]);
    const [cartItems, setCartItems] = useState([]);
    const { user, token } = useAuth();
    const { updateCart } = useCart();
-   const navigate = useNavigate();
+   const [note, setNote] = useState('');
+   const [deliveryAt, setDeliveryAt] = useState('');
+   const [address, setAddress] = useState('');
+   const [isFormComplete, setIsFormComplete] = useState(false);
+
+
+   const [orderData, setOrderData] = useState({
+      address: '',
+      deliveryAt: '',
+      note: '',
+      sale: ''
+   });
+
+   const handleInputChange = (e) => {
+      const { id, value } = e.target;
+      if (id === 'note') setNote(value);
+      if (id === 'datepicker') setDeliveryAt(value);
+      if (id === 'address') setAddress(value);
+   };
+
+   useEffect(() => {
+      const orderData = {
+         address: address,
+         deliveryAt: deliveryAt,
+         note: note,
+         sale: ''
+      };
+
+      setIsFormComplete(address && deliveryAt); // Check if the required fields are filled
+   }, [address, deliveryAt, note]);
 
    if (!user) {
       navigate('/login');
@@ -53,7 +83,7 @@ const CartPage = () => {
    }, [token, updateCart]);
 
    const deleteCartItem = (cartItemId) => {
-      axios.delete(`http://localhost:8080/sugarnest/v0.1/carts/remove-item/${cartItemId}`, {
+      axios.delete(`${REST_API_BASE_URL}/carts/remove-item/${cartItemId}`, {
          headers: {
             "Authorization": `Bearer ${token}`
          }
@@ -77,11 +107,11 @@ const CartPage = () => {
             updateCart(response.data.result);
          })
          .catch(error => {
-           Swal.fire({
+            Swal.fire({
                icon: 'error',
                title: 'Số lượng sản phẩm đã hết',
                text: 'Số lượng sản phẩm trong kho không đủ.',
-           });
+            });
          });
    };
 
@@ -122,7 +152,7 @@ const CartPage = () => {
          sale: ''
       };
 
-      axios.post('http://localhost:8080/sugarnest/v0.1/orders', orderData, {
+      axios.post(`${REST_API_BASE_URL}/orders`, orderData, {
          headers: {
             "Authorization": `Bearer ${token}`
          }
@@ -145,6 +175,14 @@ const CartPage = () => {
             });
          });
    };
+   const [minDate, setMinDate] = useState('');
+   useEffect(() => {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      setMinDate(`${yyyy}-${mm}-${dd}`);
+   }, []);
 
    return (
       <section className="main-cart-page main-container col1-layout mobile-tab active" id="cart-tab" data-title="Giỏ hàng">
@@ -210,7 +248,7 @@ const CartPage = () => {
                            }
                            <div className="cart-note">
                               <label htmlFor="note" className="note-label">Ghi chú đơn hàng</label>
-                              <textarea id="note" name="note" rows="8"></textarea>
+                              <textarea id="note" name="note" rows="8" onChange={handleInputChange}></textarea>
                            </div>
                         </div>
                         <div className="header-cart-price">
@@ -221,10 +259,13 @@ const CartPage = () => {
                                     <div className="ega-delivery__wrapper left">
                                        <p className="ega-delivery__title">HẸN GIỜ NHẬN HÀNG</p>
                                        <div className="ega-delivery ega-form__group">
-                                          <label>
-                                             Ngày nhận hàng
-                                             <input id="datepicker" className="ega-delivery__date ega-form__control" type="date" />
-                                          </label>
+                                          <input
+                                             id="datepicker"
+                                             className="ega-delivery__date ega-form__control"
+                                             type="date"
+                                             min={minDate}
+                                             onChange={handleInputChange}
+                                          />
                                           <label>
                                              Họ và tên
                                              <input id="nameOrder" className="ega-delivery__date ega-form__control" type="text" />
@@ -235,7 +276,7 @@ const CartPage = () => {
                                           </label>
                                           <label>
                                              Địa chỉ nhận hàng
-                                             <input id="address" className="ega-delivery__date ega-form__control" type="text" />
+                                             <input id="address" className="ega-delivery__date ega-form__control" type="text" onChange={handleInputChange} />
                                           </label>
                                        </div>
                                        <div className="ega-delivery__note"></div>
@@ -296,7 +337,18 @@ const CartPage = () => {
                                  </a>
                               </div>
                            </div>
-                           <MyPayPalButton total="10.00" currency="USD" description="Your description" />
+                           {isFormComplete ? (
+                              <MyPayPalButton
+                                 total={cart.totalPrice}
+                                 currency="USD"
+                                 description="Payment for order"
+                                 orderData={orderData}
+                                 token={token}
+                                 updateCart={updateCart}
+                              />
+                           ) : (
+                              <div className="text-danger">Vui lòng điền vào tất cả các trường bắt buộc để kích hoạt thanh toán PayPal.</div>
+                           )}
                         </div>
                      </div>
                   </form>

@@ -2,13 +2,14 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { loginToken } from '../services/AuthService.js';
 import axios from 'axios';
 import { REST_API_BASE_URL } from '../services/ProductService.js';
+
 // Tạo context
 const AuthContext = createContext();
 
 // Tạo provider
 export function AuthProvider({ children }) {
-
     const [token, setToken] = useState(null); // Ban đầu đặt token là null
+    const [user, setUser] = useState(null); // Thêm state để lưu trữ thông tin người dùng
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -17,17 +18,17 @@ export function AuthProvider({ children }) {
                 setToken(tokenFromStorage);
             }
         }
-    }, []); 
+    }, []);
+
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get('token');
 
         if (token) {
             localStorage.setItem('token', token);
+            setToken(token);
         }
     }, []);
-
-    const [user, setUser] = useState(null); // Thêm state để lưu trữ thông tin người dùng
 
     useEffect(() => {
         const checkTokenValidity = async () => {
@@ -53,6 +54,21 @@ export function AuthProvider({ children }) {
         };
         checkTokenValidity();
     }, [token]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const tokenFromStorage = localStorage.getItem('token');
+            if (tokenFromStorage) {
+                const tokenWillExpireSoon = willTokenExpireSoon(tokenFromStorage);
+                console.log('Token will expire soon:', tokenWillExpireSoon);
+                if (tokenWillExpireSoon) {
+                    refreshAuthToken(tokenFromStorage);
+                }
+            }
+        }, 2 * 60 * 1000); // 15 minutes
+
+        return () => clearInterval(interval);
+    }, []);
 
     const login = async (accountName, password) => {
         try {
@@ -86,6 +102,40 @@ export function AuthProvider({ children }) {
         }
     };
 
+    const refreshAuthToken = async (currentToken) => {
+        try {
+            const response = await axios.post(`${REST_API_BASE_URL}/auth/refresh`, { token: currentToken });
+            if (response.data && response.data.result) {
+                const newToken = response.data.result.token;
+                localStorage.setItem('token', newToken);
+                setToken(newToken);
+                console.log('Token refreshed successfully');
+            }
+        } catch (error) {
+            console.error('Error refreshing token:', error);
+        }
+    };
+
+    const willTokenExpireSoon = (token) => {
+        const decodedToken = parseJwt(token);
+        const currentTime = Date.now() / 1000;
+        const tokenExpiryBuffer = 2 * 60; // 15 minutes buffer time
+        return decodedToken.exp < currentTime + tokenExpiryBuffer;
+    };
+
+    const parseJwt = (token) => {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+
+            return JSON.parse(jsonPayload);
+        } catch (e) {
+            return null;
+        }
+    };
 
     const logout = () => {
         localStorage.removeItem('token');
