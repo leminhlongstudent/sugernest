@@ -254,7 +254,6 @@ const CartPage = () => {
                         <div className="header-cart-price">
                            <div className="timedeli-modal">
                               <div className="timedeli-modal-content">
-                                 <button type="button" className="close window-close d-sm-none" aria-label="Close"><span aria-hidden="true">×</span></button>
                                  <div className="timedeli d-sm-block">
                                     <div className="ega-delivery__wrapper left">
                                        <p className="ega-delivery__title">HẸN GIỜ NHẬN HÀNG</p>
@@ -283,8 +282,8 @@ const CartPage = () => {
                                     </div>
                                  </div>
                                  <div className="timedeli-cta">
-                                    <button className="btn btn-block timedeli-btn  d-sm-none" type="button">
-                                       <span>Xong</span>
+                                    <button className="btn btn-block timedeli-btn  d-sm-none" type="button" onClick={handleCheckout}>
+                                       <span>Thanh toán</span>
                                     </button>
                                  </div>
                               </div>

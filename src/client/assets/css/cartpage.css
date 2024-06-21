@@ -554,11 +554,11 @@ button.increase.items-count.btn-plus.btn{
 	.price_vat {
 		font-size: 12px;
 	}
-	.timedeli-modal {
+	/* .timedeli-modal {
 		position: fixed;
 		display: none;
 		z-index: -1;
-	}
+	} */
 	.timedeli-modal.active {
 		position: fixed;
 		z-index: 9999;

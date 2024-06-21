@@ -112,8 +112,10 @@ const Header = () => {
   const handleClick = () => {
     if (user) {
       navigator(`/profile`);
+      setMobileMenu(false)
     } else {
       navigator(`/login`);
+      setMobileMenu(false)
     }
   };
   function getProduct(id) {
@@ -174,6 +176,18 @@ const Header = () => {
                       className="font-weight: light">
                       Đăng xuất
                     </a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {checkPermission && (
+                      <p onClick={() => getAdmin()}>
+                        <i
+                          className="fa fa-cog"
+                          aria-hidden="true"
+                          title="Truy cập vào quản trị viên"
+                        ></i>
+                        Trang quản trị
+                      </p>
+                    )}
+
                   </small>
                 )}
                 {!user && (

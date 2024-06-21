@@ -37,7 +37,7 @@ const Footer = () => {
                 <ul
                   className="follow_option mb-0 mt-2 mt-sm-0 d-flex flex-wrap align-items-center p-0 list-unstyled">
                   <li>
-                    <a className="facebook link" href="https://bikipweb.site" target="_blank"
+                    <a className="facebook link" target="_blank"
                       title="Theo dõi Facebook EGA Cake">
                       <img src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/facebook.png?1704435927037"
                         loading="lazy" width="36" height="36" alt="facebook" />
@@ -45,7 +45,7 @@ const Footer = () => {
                   </li>
 
                   <li>
-                    <a className="instgram link" href="https://bikipweb.site" target="_blank"
+                    <a className="instgram link" target="_blank"
                       title="Theo dõi instgram EGA Cake">
                       <img src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/instagram.png?1704435927037"
                         loading="lazy" width="36" height="36" alt="instgram" />
@@ -53,7 +53,7 @@ const Footer = () => {
                   </li>
 
                   <li>
-                    <a className="youtube link" href="https://bikipweb.site" target="_blank"
+                    <a className="youtube link"  target="_blank"
                       title="Theo dõi youtube EGA Cake">
                       <img src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/youtube.png?1704435927037"
                         loading="lazy" width="36" height="36" alt="youtube" />
@@ -61,7 +61,7 @@ const Footer = () => {
                   </li>
 
                   <li>
-                    <a className="tiktok link" href="https://bikipweb.site" target="_blank"
+                    <a className="tiktok link" target="_blank"
                       title="Theo dõi tiktok EGA Cake">
                       <img src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/tiktok.png?1704435927037"
                         loading="lazy" width="36" height="36" alt="tiktok" />
@@ -69,7 +69,7 @@ const Footer = () => {
                   </li>
 
                   <li>
-                    <a className="zalo link" href="https://zalo.me/834141234794359440" target="_blank"
+                    <a className="zalo link" target="_blank"
                       title="Theo dõi zalo EGA Cake">
                       <img src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/zalo.png?1704435927037"
                         loading="lazy" width="36" height="36" alt="zalo" />
@@ -87,7 +87,7 @@ const Footer = () => {
           <div className="container">
             <div className="row">
               <div className="col-xs-12 col-md-6 col-lg-3 footer-click footer-1">
-                <a href="/public" className="logo-wrapper mb-3 d-block ">
+                <a  className="logo-wrapper mb-3 d-block ">
                   <img loading="lazy"
                     src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/logo-footer.png?1704435927037"
                     alt="logo EGA Cake" width="164" height="50" />
@@ -109,8 +109,8 @@ const Footer = () => {
                 <div className="single-contact">
                   <i className="fa fa-envelope"></i>
                   <div className="content">
-                    <strong>Email: </strong><a title="support@sapo.vn" className="link"
-                      href="mailto:support@sapo.vn">support@sapo.vn</a>
+                    <strong>Email: </strong><a title="leminhlongit@gmail.com" className="link"
+                      href="mailto:leminhlongit@gmail.com">leminhlongit@gmail.com</a>
                   </div>
                 </div>
               </div>
@@ -120,18 +120,18 @@ const Footer = () => {
                 </h4>
                 <ul className="list-menu toggle-mn">
                   <li className="li_menu">
-                    <a className="link" href="/gioi-thieu" title="Về chúng tôi">Về chúng tôi</a>
+                    <a className="link" title="Về chúng tôi">Về chúng tôi</a>
                   </li>
                   <li className="li_menu">
-                    <a className="link" href="/he-thong-cua-hang" title="Hệ thống cửa hàng">Hệ thống cửa
+                    <a className="link" title="Hệ thống cửa hàng">Hệ thống cửa
                       hàng</a>
                   </li>
                   <li className="li_menu">
-                    <a className="link" href="/goi-dien-dat-hang" title="Gọi điện đặt hàng">Gọi điện đặt
+                    <a className="link"  title="Gọi điện đặt hàng">Gọi điện đặt
                       hàng</a>
                   </li>
                   <li className="li_menu">
-                    <a className="link" href="/xuat-hoa-don-dien-tu" title="Xuất hoá đơn điện tử">Xuất hoá đơn
+                    <a className="link"  title="Xuất hoá đơn điện tử">Xuất hoá đơn
                       điện tử</a>
                   </li>
                 </ul>
@@ -142,15 +142,15 @@ const Footer = () => {
                 </h4>
                 <ul className="list-menu toggle-mn">
                   <li className="li_menu">
-                    <a className="link" href="/chinh-sach-ban-hang" title="Chính sách bán hàng">Chính sách bán
+                    <a className="link" title="Chính sách bán hàng">Chính sách bán
                       hàng</a>
                   </li>
                   <li className="li_menu">
-                    <a className="link" href="/chinh-sach-doi-tra" title="Chính sách đổi trả">Chính sách đổi
+                    <a className="link" title="Chính sách đổi trả">Chính sách đổi
                       trả</a>
                   </li>
                   <li className="li_menu">
-                    <a className="link" href="/chinh-sach-giao-hang" title="Chính sách giao hàng">Chính sách
+                    <a className="link" title="Chính sách giao hàng">Chính sách
                       giao hàng</a>
                   </li>
                 </ul>
@@ -181,7 +181,7 @@ const Footer = () => {
                   Phương thức thanh toán
                 </span>
                 <div className="trustbadge">
-                  <a href="/public" target="_blank" title="Phương thức thanh toán">
+                  <a target="_blank" title="Phương thức thanh toán">
                     <img className=" img-fluid" loading="lazy"
                       src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/footer_trustbadge.jpg?1704435927037"
                       alt="" width="246" height="53" />
@@ -197,9 +197,8 @@ const Footer = () => {
               <div id="copyright" className=" col-xl-4 col-xs-12 fot_copyright">
 
                 <span className="wsp">
-                  © Bản quyền thuộc về <a href="https://egany.com" rel="nofollow" target="_blank">EGANY</a>
+                  © Bản quyền thuộc về <a rel="nofollow" target="_blank">EGANY</a>
                   | Cung cấp bởi <a
-                    href="https://www.sapo.vn/?utm_campaign=cpn:kho_theme-plm:footer&utm_source=Tu_nhien&utm_medium=referral&utm_content=fm:text_link-km:-sz:&utm_term=&campaign=kho_theme-sapo"
                     rel="nofollow" title="Sapo" target="_blank">Sapo</a>
                 </span>
               </div>

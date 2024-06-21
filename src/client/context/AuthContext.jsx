@@ -65,7 +65,7 @@ export function AuthProvider({ children }) {
                     refreshAuthToken(tokenFromStorage);
                 }
             }
-        }, 2 * 60 * 1000); // 15 minutes
+        }, 15 * 60 * 1000); // 15 minutes
 
         return () => clearInterval(interval);
     }, []);
@@ -119,7 +119,7 @@ export function AuthProvider({ children }) {
     const willTokenExpireSoon = (token) => {
         const decodedToken = parseJwt(token);
         const currentTime = Date.now() / 1000;
-        const tokenExpiryBuffer = 2 * 60; // 15 minutes buffer time
+        const tokenExpiryBuffer = 15 * 60; // 15 minutes buffer time
         return decodedToken.exp < currentTime + tokenExpiryBuffer;
     };
 

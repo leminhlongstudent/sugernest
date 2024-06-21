@@ -308,11 +308,11 @@ const AdminUpdateProductComponent = () => {
                 const formData = new FormData();
                 formData.append('file', mainImage);
 
-                const response = await axios.post(`${REST_API_BASE_URL}/uploadFile`, formData, {
+                const response = await axios.post(`${REST_API_BASE_URL}/images/upload`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                 });
 
-                mainImageUrl = response.data.result;
+                mainImageUrl = response.data;
             } else {
                 mainImageUrl = mainImage;
             }
@@ -322,11 +322,11 @@ const AdminUpdateProductComponent = () => {
                     const formData = new FormData();
                     formData.append('file', file);
 
-                    const response = await axios.post(`${REST_API_BASE_URL}/uploadFile`, formData, {
+                    const response = await axios.post(`${REST_API_BASE_URL}/images/upload`, formData, {
                         headers: { 'Content-Type': 'multipart/form-data' },
                     });
 
-                    descriptionImageUrls.push(response.data.result);
+                    descriptionImageUrls.push(response.data);
                 } else {
                     descriptionImageUrls.push(file);
                 }
@@ -606,7 +606,7 @@ const AdminUpdateProductComponent = () => {
                                                     width={400}
                                                     alt="Thumb image"
                                                     id="thumbimage"
-                                                    src={mainImage}
+                                                    src={typeof mainImage === 'string' ? mainImage : URL.createObjectURL(mainImage)}
                                                 />
                                                 <button
                                                     type="button"
@@ -641,7 +641,7 @@ const AdminUpdateProductComponent = () => {
                                                     height={100}
                                                     width={100}
                                                     alt="Thumb image"
-                                                    src={image}
+                                                    src={typeof image === 'string' ? image : URL.createObjectURL(image)}
                                                 />
                                                 <button
                                                     type="button"
