@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState,useRef } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb.jsx';
 import { REST_API_BASE_URL } from '../services/ProductService.js';
+import ReCAPTCHA from "react-google-recaptcha";
+import Swal from 'sweetalert2';
+
 
 const LoginPage = () => {
     const { login } = useAuth();
@@ -10,9 +13,20 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const recaptchaRef = useRef(null);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const captchaValue = recaptchaRef.current.getValue();
+        if (!captchaValue) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: 'Vui lòng xác nhận bạn không phải là robot!',
+          });
+          return;
+        }
         try {
             const loginSuccess = await login(accountName, password);
             if (!loginSuccess) {
@@ -131,6 +145,11 @@ const LoginPage = () => {
                                                     >
                                                         Đăng nhập
                                                     </button>
+                                                    <br />
+                                                    <ReCAPTCHA
+                                                        ref={recaptchaRef}
+                                                        sitekey="6Ld80P4pAAAAAHpecliz4B4E9kDR6Kqla2lWVHzX"
+                                                    />
                                                     {error && <div style={{ color: 'red' }}>{error}</div>}
                                                 </div>
                                             </div>
