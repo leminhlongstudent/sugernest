@@ -94,15 +94,11 @@ const ProductSlider = ({ product }) => {
                                             <div className="item"
                                                 data-src={imageProduct.image} key={index}>
                                                 <a onClick={() => handleImageClick(index)} className="d-block pos-relative embed-responsive embed-responsive-1by1">
-                                                    <picture>
-                                                        <source media="(max-width: 480px)"
-                                                            srcSet={imageProduct.image} />
                                                         <img loading="lazy" className=" img-fluid" style={{ '--image-scale': '1', cursor: "pointer" }}
                                                             data-img={imageProduct.image}
                                                             src={imageProduct.image}
                                                             alt={imageProduct.image} width="600" height="600"
                                                             data-src={imageProduct.image} />
-                                                    </picture>
                                                 </a>
                                             </div>
                                         ))}
