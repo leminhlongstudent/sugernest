@@ -25,7 +25,7 @@ function AppContent() {
       {showHeaderFooter && <AdminHeader />}
       <Routes>
 
-        <Route element={<ProtectedRoute requiredPermission="SALES_GET" />}>
+        <Route element={<ProtectedRoute requiredPermission="ADMIN_PANEL" />}>
           <Route path="/admin" element={<AdminHomePage />} />
           <Route path="/admin/index" element={<AdminHomePage />} />
         </Route>
