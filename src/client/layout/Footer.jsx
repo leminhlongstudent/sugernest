@@ -1,6 +1,26 @@
-import React from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 const Footer = () => {
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  const handleScroll = () => {
+    if (window.pageYOffset > 300) {
+      setShowScrollTop(true);
+    } else {
+      setShowScrollTop(false);
+    }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
   return (
     <div>
       <div className='top-footer'>
@@ -206,6 +226,27 @@ const Footer = () => {
           </div>
         </div>
       </footer>
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          style={{
+            position: 'fixed',
+            bottom: '50px',
+            right: '50px',
+            zIndex: 1000,
+            backgroundColor: '#a50a06',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '50%',
+            width: '50px',
+            height: '50px',
+            cursor: 'pointer',
+          }}
+          aria-label="Scroll to top"
+        >
+          <i class="fa fa-arrow-up" aria-hidden="true"></i>
+        </button>
+      )}
     </div>
   )
 }
