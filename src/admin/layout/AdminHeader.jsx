@@ -127,9 +127,9 @@ const AdminHeader = () => {
                         </a>
                     </li>
                     <li>
-                        <a className="app-menu__item" href="#">
+                        <a className="app-menu__item" href="https://analytics.google.com/analytics/web/?authuser=0#/p376073577/reports/intelligenthome?params=_u..nav%3Dmaui">
                             <i className="app-menu__icon bx bx-cog" />
-                            <span className="app-menu__label">Cài đặt hệ thống</span>
+                            <span className="app-menu__label">Google Analytis</span>
                         </a>
                     </li>
                 </ul>
