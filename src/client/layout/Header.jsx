@@ -8,6 +8,8 @@ import Sidebar from './Sidebar.jsx'
 import { REST_API_BASE_URL } from '../services/ProductService.js';
 import { hasPermission } from '../services/AuthService.js';
 import SearchBar from '../components/SearchBar.jsx';
+import { useTranslation } from 'react-i18next';
+
 
 const Header = () => {
   const [cart, setCart] = useState([]);
@@ -17,6 +19,12 @@ const Header = () => {
   const { updateCart } = useCart();
   const [cartTotal, setCartTotal] = useState(0);
   const [checkPermission, setCheckPermission] = useState(false);
+
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
 
   const [mobileMenu, setMobileMenu] = useState(false);
   const mobileMenuRef = useRef(null);
@@ -159,7 +167,7 @@ const Header = () => {
                   className="d-block"
                   title="Tài khoản"
                 >
-                  Tài khoản
+                  {t('account')}
                 </a>
                 {user && (
                   <small>
@@ -174,7 +182,7 @@ const Header = () => {
                       onClick={getLogout}
                       title="{user.fullName}"
                       className="font-weight: light">
-                      Đăng xuất
+                      {t('logout')}
                     </a>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     {checkPermission && (
@@ -184,7 +192,7 @@ const Header = () => {
                           aria-hidden="true"
                           title="Truy cập vào quản trị viên"
                         ></i>
-                        Trang quản trị
+                        {t('adminPage')}
                       </p>
                     )}
 
@@ -197,7 +205,7 @@ const Header = () => {
                       title="Đăng nhập"
                       className="font-weight: light"
                     >
-                      Đăng nhập
+                      {t('login')}
                     </a>
                   </small>
                 )}
@@ -261,15 +269,29 @@ const Header = () => {
                   </div>
                   <SearchBar />
                   <div className="col-4 col-lg-4 menu-cart">
+
                     <ul
                       className="header-right mb-0 list-unstyled d-flex align-items-center justify-content-end">
+                      <li className='media d-lg-block d-none '>
+                        <a
+                          className='d-block text-center'
+                          title="Đơn hàng"
+                          onClick={() => changeLanguage(i18n.language === 'vn' ? 'en' : 'vn')}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <i className="fa fa-globe" aria-hidden="true" style={{ fontSize: '22px' }}></i>
+                          <span className='d-none d-xl-block mt-1'>
+                            {i18n.language === 'vn' ? 'EN' : 'VN'}
+                          </span>
+                        </a>
+                      </li>
                       <li className='media d-lg-block d-none '>
                         <a onClick={getOrders} className='d-block text-center' title="Đơn hàng">
                           <img loading="lazy"
                             src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/order-icon.png?1704435927037"
                             width="24" height="24" className="align-self-center" alt="order-icon" />
                           <span className='d-none d-xl-block mt-1'>
-                            Đơn hàng
+                            {t('orders')}
                           </span>
                         </a>
                       </li>
@@ -280,7 +302,7 @@ const Header = () => {
                             src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/address-icon.png?1704435927037"
                             width="24" height="24" className="align-self-center" alt="phone-icon" />
                           <span className='d-none d-xl-block mt-1'>
-                            Cửa hàng
+                            {t('store')}
                           </span>
                         </a>
                       </li>
@@ -302,11 +324,12 @@ const Header = () => {
                             {checkPermission && (
                               <i onClick={() => getAdmin()} className="fa fa-cog" aria-hidden="true" title="Truy cập vào quản trị viên"></i>
                             )}
-                            <span className='d-none d-xl-block mt-1'>{user ? user.fullName : 'Tài khoản'}</span>
-
+                            <span className='d-none d-xl-block mt-1'>
+                              {user ? user.fullName : t('account')}
+                            </span>
                           </a>
                           {user && (
-                            <button onClick={() => getLogout()} className="logout-button">Đăng xuất
+                            <button onClick={() => getLogout()} className="logout-button">{(t('logout'))}
                             </button>
                           )}
                         </div>
@@ -321,7 +344,7 @@ const Header = () => {
                                 width="24" height="24" alt="cart_icon" />
                               <span className="count_item count_item_pr">{cartTotal}</span>
                             </div>
-                            <span className='d-xl-block d-none mt-1'>Giỏ hàng</span>
+                            <span className='d-xl-block d-none mt-1'>{(t('cart'))}</span>
                           </a>
                           <div className="top-cart-content card ">
                             {cartItems.length > 0 ? (
@@ -351,12 +374,12 @@ const Header = () => {
                                   ))}
                                 </ul>
                                 <div className="pd">
-                                  <div className="top-subtotal">Tổng tiền tạm tính: <span className="price price_big">{parseInt(cart.totalPrice).toLocaleString('it-IT')}₫</span></div>
+                                  <div className="top-subtotal">{(t('tempTotal'))}: <span className="price price_big">{parseInt(cart.totalPrice).toLocaleString('it-IT')}₫</span></div>
                                 </div>
-                                <div className="pd right_ct"><a onClick={getCart} className="btn btn-white"><span>Tiến hành thanh toán</span></a></div>
+                                <div className="pd right_ct"><a onClick={getCart} className="btn btn-white"><span>{(t("processingPayment"))}</span></a></div>
                               </ul>
                             ) : (
-                              <div className="no-item"><p>Không có sản phẩm nào.</p></div>
+                              <div className="no-item"><p>{(t('noItems'))}.</p></div>
                             )}
                           </div>
                         </div>
@@ -377,23 +400,23 @@ const Header = () => {
                 <ul className="navigation-horizontal list-group list-group-flush scroll">
                   <li className="menu-item list-group-item">
                     <a onClick={getHomePage} className="menu-item__link" title="Trang chủ">
-                      <span> Trang chủ</span>
+                      <span>    {t('homePage')}</span>
                     </a>
                   </li>
                   <li className="menu-item list-group-item">
                     <a onClick={() => navigator(`/introduction`)} className="menu-item__link" title="Giới thiệu">
-                      <span> Giới thiệu</span>
+                      <span>{t('introduce')}</span>
                     </a>
                   </li>
                   <li className="menu-item list-group-item">
                     <a onClick={() => navigator(`/products`)} className="menu-item__link" title="Quà tặng 08/03">
-                      <span> Quà tặng 08/03</span>
+                      <span> {t('Gift_03_08')}</span>
                     </a>
 
                   </li>
                   <li className="menu-item list-group-item">
                     <a onClick={() => navigator(`/products`)} className="menu-item__link" title="Chương trình khuyến mãi">
-                      <span> Chương trình khuyến mãi</span>
+                      <span>{t('promotions')}</span>
                       <i className="fa fa-chevron-right" aria-hidden="true"></i>
                     </a>
                     <div className="submenu scroll  default ">
@@ -419,27 +442,27 @@ const Header = () => {
                   </li>
                   <li className="menu-item list-group-item">
                     <a onClick={() => navigator(`/products`)} className="menu-item__link" title="Bánh ngon mỗi ngày">
-                      <span> Bánh ngon mỗi ngày</span>
+                      <span> {t('Delicious cakes every day')}</span>
                     </a>
                   </li>
                   <li className="menu-item list-group-item">
                     <a className="menu-item__link" title="Công thức làm bánh">
-                      <span> Công thức làm bánh</span>
+                      <span> {t('Cake recipes')}</span>
                     </a>
                   </li>
                   <li className="menu-item list-group-item">
                     <a className="menu-item__link" title="Chuyên mục làm bánh">
-                      <span> Chuyên mục làm bánh</span>
+                      <span> {t('Baking section')}</span>
                     </a>
                   </li>
                   <li className="menu-item list-group-item">
                     <a onClick={() => navigator(`/contact`)} className="menu-item__link" title="Liên hệ">
-                      <span> Liên hệ</span>
+                      <span> {t('Contact')}</span>
                     </a>
                   </li>
                   <li className="menu-item list-group-item">
                     <a className="menu-item__link" title="Góp ý / Khiếu nại">
-                      <span> Góp ý chúng tôi </span>
+                      <span> {t('Give us your feedback')}</span>
                     </a>
                   </li>
                 </ul>

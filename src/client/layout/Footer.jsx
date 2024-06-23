@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react'
+import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const { t } = useTranslation();
 
   const handleScroll = () => {
     if (window.pageYOffset > 300) {
@@ -31,17 +33,17 @@ const Footer = () => {
                 <img src='//bizweb.dktcdn.net/100/419/628/themes/897067/assets/email-icon.svg?1704435927037'
                   width='32' height='32' loading='lazy' alt='email' />
                 <h6 className="m-0">
-                  Bạn muốn nhận khuyến mãi đặc biệt? Đăng ký ngay.
+                  {t('Do you want')}
                 </h6>
                 <div className="form_register" style={{ flex: '1 1 100%' }}>
                   <form id="mc-form" className="newsletter-form custom-input-group" data-toggle="validator">
                     <input className="form-control input-group-field  " aria-label="Địa chỉ Email" type="email"
-                      placeholder="Thả email nhận ngay ưu đãi.." name="EMAIL" required autoComplete="off" />
+                      placeholder={t('Enter your email to receive promotions')} name="EMAIL" required autoComplete="off" />
                     <div className="input-group-btn btn-action">
                       <button className="px-3 py-2 h-100 btn button_subscribe subscribe"
                         style={{ lineHeight: '24px' }}
                         type="submit" aria-label="Đăng ký nhận tin"
-                        name="subscribe">Đăng ký</button>
+                        name="subscribe">{t('Register')}</button>
                     </div>
                   </form>
                   <div className="mailchimp-alerts ">
@@ -73,7 +75,7 @@ const Footer = () => {
                   </li>
 
                   <li>
-                    <a className="youtube link"  target="_blank"
+                    <a className="youtube link" target="_blank"
                       title="Theo dõi youtube EGA Cake">
                       <img src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/youtube.png?1704435927037"
                         loading="lazy" width="36" height="36" alt="youtube" />
@@ -107,7 +109,7 @@ const Footer = () => {
           <div className="container">
             <div className="row">
               <div className="col-xs-12 col-md-6 col-lg-3 footer-click footer-1">
-                <a  className="logo-wrapper mb-3 d-block ">
+                <a className="logo-wrapper mb-3 d-block ">
                   <img loading="lazy"
                     src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/logo-footer.png?1704435927037"
                     alt="logo EGA Cake" width="164" height="50" />
@@ -116,13 +118,13 @@ const Footer = () => {
 
                 </p>
                 <div className="single-contact">
-                  <div className="content"><strong>Địa chỉ: </strong>
-                    <span>150/8 Nguyễn Duy Cung, Phường 12, TP Hồ Chí Minh, </span>
+                  <div className="content"><strong>{t('Address')}: </strong>
+                    <span>150/8 Nguyễn Duy Cung, Phường 12, TP Hồ Chí Minh </span>
                   </div>
                 </div>
                 <div className="single-contact">
                   <div className="content">
-                    <strong>Số điện thoại: </strong>
+                    <strong>{t('Phone')}: </strong>
                     <a className="link" title="19006750" href="tel:19006750">19006750</a>
                   </div>
                 </div>
@@ -136,69 +138,61 @@ const Footer = () => {
               </div>
               <div className="col-xs-12 col-md-6 col-lg-3 footer-click">
                 <h4 className="title-menu clicked">
-                  Hỗ trợ khách hàng <i className="fa fa-angle-down d-md-none d-inline-block"></i>
+                  {t('Customer support')} <i className="fa fa-angle-down d-md-none d-inline-block"></i>
                 </h4>
                 <ul className="list-menu toggle-mn">
                   <li className="li_menu">
-                    <a className="link" title="Về chúng tôi">Về chúng tôi</a>
+                    <a className="link" title="Về chúng tôi">{t('About us')}</a>
                   </li>
                   <li className="li_menu">
-                    <a className="link" title="Hệ thống cửa hàng">Hệ thống cửa
-                      hàng</a>
+                    <a className="link" title="Hệ thống cửa hàng">{t('Shop system')}</a>
                   </li>
                   <li className="li_menu">
-                    <a className="link"  title="Gọi điện đặt hàng">Gọi điện đặt
-                      hàng</a>
+                    <a className="link" title="Gọi điện đặt hàng">{t('Call to order')}</a>
                   </li>
                   <li className="li_menu">
-                    <a className="link"  title="Xuất hoá đơn điện tử">Xuất hoá đơn
-                      điện tử</a>
+                    <a className="link" title="Xuất hoá đơn điện tử">{t('Sales policy')}</a>
                   </li>
                 </ul>
               </div>
               <div className="col-xs-12 col-md-6 col-lg-3 footer-click">
                 <h4 className="title-menu clicked">
-                  Chính sách <i className="fa fa-angle-down d-md-none d-inline-block"></i>
+                  {t('Export electronic invoices')} <i className="fa fa-angle-down d-md-none d-inline-block"></i>
                 </h4>
                 <ul className="list-menu toggle-mn">
                   <li className="li_menu">
-                    <a className="link" title="Chính sách bán hàng">Chính sách bán
-                      hàng</a>
+                    <a className="link" title="Chính sách bán hàng">{t('Return policy')}</a>
                   </li>
                   <li className="li_menu">
-                    <a className="link" title="Chính sách đổi trả">Chính sách đổi
-                      trả</a>
+                    <a className="link" title="Chính sách đổi trả">{t('Delivery policy')}</a>
                   </li>
                   <li className="li_menu">
-                    <a className="link" title="Chính sách giao hàng">Chính sách
-                      giao hàng</a>
+                    <a className="link" title="Chính sách giao hàng">{t('Support switchboard')}</a>
                   </li>
                 </ul>
               </div>
               <div className="col-xs-12 col-md-6 col-lg-3">
                 <h4 className="title-menu">
-                  Tổng đài hỗ trợ
+                  {t('Export electronic invoices')}
                 </h4>
                 <p>
-                  <span>Gọi mua hàng:</span>
+                  <span>{t('Call to buy')}:</span>
                   <a className='text-primary font-weight-bold' href='tel:19006750'>19006750</a>
                   <span>(8h-20h)</span>
                 </p>
                 <p>
-                  <span>
-                    Gọi bảo hành:</span>
+                  <span>{t('Call for warranty')}:</span>
                   <a className='text-primary font-weight-bold' href='tel:19006750 '>19006750 </a>
                   <span>(8h-20h)</span>
                 </p>
                 <p>
-                  <span>
-                    Gọi khiếu nại:</span>
+                  <span>{t('Call for complaints')}:</span>
                   <a className='text-primary font-weight-bold' href='tel:19006750 '>19006750 </a>
                   <span> (8h-20h)</span>
                 </p>
 
                 <span className="title-menu">
-                  Phương thức thanh toán
+                  {t('Payment methods')}
                 </span>
                 <div className="trustbadge">
                   <a target="_blank" title="Phương thức thanh toán">
@@ -217,9 +211,9 @@ const Footer = () => {
               <div id="copyright" className=" col-xl-4 col-xs-12 fot_copyright">
 
                 <span className="wsp">
-                  © Bản quyền thuộc về <a rel="nofollow" target="_blank">EGANY</a>
-                  | Cung cấp bởi <a
-                    rel="nofollow" title="Sapo" target="_blank">Sapo</a>
+                  © {t('Copyright belong to')} <a rel="nofollow" target="_blank">SugarNest </a>
+                  | {t('Provided by')} <a
+                    rel="nofollow" title="Sapo" target="_blank">SugarNest</a>
                 </span>
               </div>
             </div>
@@ -244,7 +238,7 @@ const Footer = () => {
           }}
           aria-label="Scroll to top"
         >
-          <i class="fa fa-arrow-up" aria-hidden="true"></i>
+          <i className="fa fa-arrow-up" aria-hidden="true"></i>
         </button>
       )}
     </div>

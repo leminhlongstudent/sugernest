@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import debounce from 'lodash.debounce';
 import { REST_API_BASE_URL } from '../services/ProductService';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const useOutsideClick = (ref, callback) => {
     useEffect(() => {
@@ -20,6 +21,7 @@ const useOutsideClick = (ref, callback) => {
 };
 
 const SearchBar = () => {
+    const { t } = useTranslation();
     const [searchQuery, setSearchQuery] = useState('');
     const [results, setResults] = useState([]);
     const [showResults, setShowResults] = useState(false);
@@ -87,7 +89,7 @@ const SearchBar = () => {
                     autoComplete="off"
                     className="input-group-field auto-search form-control"
                     required
-                    placeholder="Bạn cần tìm gì?"
+                    placeholder={t('What are you looking for')}
                     value={searchQuery}
                     onChange={handleInputChange}
                 />

@@ -7,6 +7,8 @@ import LoginComponent from './pages/LoginPage.jsx'
 import RegisterComponent from './pages/RegisterPage.jsx'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import CartPage from './pages/CartPage.jsx'
+import '../i18n'; // Import file cấu hình i18n
+
 
 import '../index.css'
 import './assets/css/index.css'

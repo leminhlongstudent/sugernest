@@ -6,12 +6,15 @@ import { getLatestProduct, getMostViewedProduct, getProductByCategory, getTopSel
 import { useNavigate } from 'react-router-dom'
 import ItemProductComponent from '../components/ItemProduct.jsx';
 import Sidebar from '../layout/Sidebar.jsx';
+import { useTranslation } from 'react-i18next';
 
 const HomePage = () => {
   const [topSellingProducts, setTopSellingProducts] = useState([])
   const [lasestProduct, setLasestProduct] = useState([])
   const [mostViewedProduct, setMostViewedProduct] = useState([])
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
 
   useEffect(() => {
     getTopSellingProduct(4).then((response) => {
@@ -56,7 +59,7 @@ const HomePage = () => {
                   <span className="bar"></span>
                   <span className="bar"></span>
                 </div>
-                <strong>DANH MỤC SẢN PHẨM</strong>
+                <strong>{(t('PRODUCT PORTFOLIO'))}</strong>
               </div>
               <Sidebar />
             </div>
@@ -112,7 +115,7 @@ const HomePage = () => {
                       className='d-flex align-items-center flex-wrap flashsale__header justify-content-between col-12'>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <h2 className="heading-bar__title flashsale__title m-0">
-                          <a className='link' onClick={() => getListProduct()} title="SẢN PHẨM BÁN CHẠY NHẤT">SẢN PHẨM BÁN CHẠY NHẤT</a>
+                          <a className='link' onClick={() => getListProduct()} title="SẢN PHẨM BÁN CHẠY NHẤT">{(t('BEST - SELLING PRODUCTS'))}</a>
                         </h2>
                         <img style={{ maxWidth: '30px', maxHeight: '20px' }} alt="SẢN PHẨM BÁN CHẠY NHẤT"
                           src='//bizweb.dktcdn.net/100/419/628/themes/897067/assets/flashsale-hot.png?1704435927037' />
@@ -148,7 +151,7 @@ const HomePage = () => {
                     </a>
                     <h3 className="mb-0">
                       <a onClick={() => navigate(`/products`)} title="Sản phẩm HOT">
-                        Sản phẩm HOT
+                        {(t('HOT products'))}
                       </a>
                     </h3>
                   </div>
@@ -162,7 +165,7 @@ const HomePage = () => {
                     </a>
                     <h3 className="mb-0">
                       <a onClick={() => navigate(`/products/Bánh Chocolate`)} title="Bánh kem nhỏ">
-                        Bánh Chocolate
+                        {(t('Chocolate Cake'))}
                       </a>
                     </h3>
                   </div>
@@ -176,7 +179,7 @@ const HomePage = () => {
                     </a>
                     <h3 className="mb-0">
                       <a onClick={() => navigate(`/products/Bánh Tiramisu`)} title="Bánh ngọt ">
-                        Bánh Tiramisu
+                        {(t('Tiramisu Cake'))}
                       </a>
                     </h3>
                   </div>
@@ -190,7 +193,7 @@ const HomePage = () => {
                     </a>
                     <h3 className="mb-0">
                       <a onClick={() => navigate(`/products/Bánh cupcake`)} title="Bánh kem ">
-                        Bánh cupcake
+                        {(t('Cupcake Cake'))}
                       </a>
                     </h3>
                   </div>
@@ -204,7 +207,7 @@ const HomePage = () => {
                     </a>
                     <h3 className="mb-0">
                       <a onClick={() => navigate(`/products/Bánh pumpkin`)} title="Bánh mì">
-                        Bánh pumpkin
+                        {(t('Pumpkin Cake'))}
                       </a>
                     </h3>
                   </div>
@@ -246,7 +249,7 @@ const HomePage = () => {
                   <h2 className="heading-bar__title" style={{ color: '#ffffff' }}>
                     <img src='//bizweb.dktcdn.net/100/419/628/themes/897067/assets/section-hot-icon.png?1704435927037'
                       alt='SẢN PHẨM MỚI NHẤT' />
-                    <a className='link' onClick={() => getListProduct()} title="SẢN PHẨM MỚI NHẤT">SẢN PHẨM MỚI NHẤT</a>
+                    <a className='link' onClick={() => getListProduct()} title="SẢN PHẨM MỚI NHẤT">{(t('LATEST PRODUCT'))}</a>
                   </h2>
                 </div>
                 <div className='section__products'>
@@ -272,7 +275,7 @@ const HomePage = () => {
                   </div>
                   <div className="text-center mt-3 col-12">
                     <a onClick={getListProduct} title="Xem tất cả" className="btn btn-main btn-pill">
-                      Xem tất cả
+                      {(t('See all'))}
                       <svg className="icon">
                         <use xlinkHref="#icon-arrow" />
                       </svg>
@@ -303,7 +306,7 @@ const HomePage = () => {
                     <img src='//bizweb.dktcdn.net/100/419/628/themes/897067/assets/product_top_1-icon.png?1704435927037'
                       alt='QUÀ VALENTINE' />
                     <a className='link' onClick={() => getListProduct()} title="BÁNH NGỌT ">
-                      ĐƯỢC XEM NHIỀU NHẤT
+                      {(t('MOST VIEWED'))}
                     </a>
                   </h2>
                 </div>
@@ -319,7 +322,7 @@ const HomePage = () => {
                     <div className="text-center mt-3 col-12">
                       <a onClick={getListProduct} title="Xem tất cả"
                         className="btn btn-main btn-icon btn-pill">
-                        Xem tất cả
+                        {(t('See all'))}
 
                         <svg className="icon">
                           <use xlinkHref="#icon-arrow" />
@@ -383,7 +386,7 @@ const HomePage = () => {
                           src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/section_policies_1.jpg?1704435927037"
                           alt="section_policies_1_title" width="39" height="39" />
                       </picture>
-                      <span className='ml-2'>Giao hàng đúng giờ</span>
+                      <span className='ml-2'>{(t('Delivery on time'))} </span>
 
                     </div>
                   </div>
@@ -396,7 +399,7 @@ const HomePage = () => {
                           src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/section_policies_2.jpg?1704435927037"
                           alt="section_policies_2_title" width="39" height="39" />
                       </picture>
-                      <span className='ml-2'>Ưu đãi mỗi ngày</span>
+                      <span className='ml-2'>{(t('Deals every day'))}</span>
 
                     </div>
                   </div>
@@ -409,7 +412,7 @@ const HomePage = () => {
                           src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/section_policies_3.jpg?1704435927037"
                           alt="section_policies_3_title" width="39" height="39" />
                       </picture>
-                      <span className='ml-2'>Đổi trả trong vòng 7 ngày</span>
+                      <span className='ml-2'>{(t('Return within 7 days'))}</span>
                     </div>
                   </div>
                 </div>

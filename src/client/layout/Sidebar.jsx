@@ -2,11 +2,15 @@ import React from 'react'
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { listCategories } from '../services/ProductService.js'
+import { useTranslation } from 'react-i18next';
+
 
 const Sidebar = () => {
 
   const [categories, setCategories] = useState([])
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
 
   useEffect(() => {
     listCategories().then((response) => {
@@ -28,7 +32,7 @@ const Sidebar = () => {
                 <img loading="lazy" width='24' height='24'
                   src="https://bizweb.dktcdn.net/100/419/628/themes/897067/assets/menu_icon_1.png?1704435927037"
                   alt="Tổng hơp khuyến mãi" />
-                <span>Tổng hơp khuyến mãi</span>
+                <span>{(t('All products'))}</span>
               </a>
             </li>
             <li className="menu-item list-group-item">
@@ -36,7 +40,7 @@ const Sidebar = () => {
                 <img loading="lazy" width='24' height='24'
                   src="https://bizweb.dktcdn.net/100/419/628/themes/897067/assets/menu_icon_2.png?1704435927037"
                   alt="Tổng hơp khuyến mãi" />
-                <span>Bộ sưu tập bánh</span>
+                <span>{(t('Cake collection'))}</span>
               </a>
             </li>
             {
@@ -61,22 +65,19 @@ const Sidebar = () => {
           <img className="img-fluid"
             src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/policy_header_image_1.png?1704435927037"
             loading="lazy" width="24" height="24" alt="Giao hàng đúng giờ" />
-          <a className="link" title="Giao hàng đúng giờ">Giao hàng đúng
-            giờ</a>
+          <a className="link" title="Giao hàng đúng giờ">{(t('Correct delivery hours'))}</a>
         </li>
         <li>
           <img className="img-fluid"
             src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/policy_header_image_2.png?1704435927037"
             loading="lazy" width="24" height="24" alt="Miễn phí đổi trả trong 7 ngày" />
-          <a className="link" title="Miễn phí đổi trả trong 7 ngày">Miễn phí
-            đổi trả trong 7 ngày</a>
+          <a className="link" title="Miễn phí đổi trả trong 7 ngày">{(t('Free of charge Return within 7 days'))}</a>
         </li>
         <li>
           <img className="img-fluid"
             src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/policy_header_image_3.png?1704435927037"
             loading="lazy" width="24" height="24" alt="Ưu đãi hấp dẫn mỗi ngày" />
-          <a className="link" title="Ưu đãi hấp dẫn mỗi ngày">Ưu đãi hấp dẫn mỗi
-            ngày</a>
+          <a className="link" title="Ưu đãi hấp dẫn mỗi ngày">{(t('Attractive offers every day'))}</a>
         </li>
         <li className='hotline'>
           <img loading="lazy"
@@ -84,7 +85,7 @@ const Sidebar = () => {
             width="24" height="24" className="align-self-center" alt="phone-icon" />
           <a className="media-body d-md-flex flex-column d-none" href="tel:18001818" title="18001818">
             <strong>
-              Gọi mua hàng: 18001818
+              {(t('Call to buy'))}: 18001818
             </strong>
             <span>(8:00 - 19:00 T2 - CN)</span>
           </a>

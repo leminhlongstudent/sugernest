@@ -1,5 +1,7 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next';
 const Coupon = () => {
+    const { t } = useTranslation();
     const handleCopy = (event) => {
         const copyText = "Sao chép";
         const copiedText = "Đã chép";
@@ -19,19 +21,18 @@ const Coupon = () => {
                 <div className="coupon_item no-icon">
                     <div className="coupon_body">
                         <div className="coupon_head">
-                            <h3 className="coupon_title">NHẬP MÃ: EGA50</h3>
-                            <div className="coupon_desc">Giảm 50% cho đơn hàng giá trị tối thiểu 500K. Mã giảm
-                                tối đa 200K </div>
+                            <h3 className="coupon_title">{(t('INSERT CODE'))}: EGA50</h3>
+                            <div className="coupon_desc">{(t('50% off for orders with a minimum value of 500K. Discount code maximum 200K'))} </div>
                         </div>
                         <div className="d-flex align-items-center flex-wrap justify-content-between">
                             <button className="btn btn-main btn-sm coupon_copy" data-ega-coupon="EGA50" onClick={handleCopy}>
-                                <span>Sao chép</span></button>
+                                <span>{(t('Copy'))}</span></button>
                             <span className="coupon_info_toggle" data-coupon="EGA50">
-                                Điều kiện
+                            {(t('Conditions'))}
                             </span>
                             <div className="coupon_info">
-                                - Giá trị đơn hàng tối thiểu 500K. <br />
-                                - Mỗi khách hàng được sử dụng tối đa 1 lần. </div>
+                            {(t('Minimum order value 500K'))} <br />
+                            {(t('Each customer can use a maximum of 1 time'))} </div>
 
                         </div>
                     </div>
@@ -41,20 +42,19 @@ const Coupon = () => {
                 <div className="coupon_item no-icon">
                     <div className="coupon_body">
                         <div className="coupon_head">
-                            <h3 className="coupon_title">NHẬP MÃ: EGA15</h3>
-                            <div className="coupon_desc">Giảm 15% cho đơn hàng giá trị tối thiểu 500k. Mã giảm
-                                tối đa 100K </div>
+                            <h3 className="coupon_title">{(t('INSERT CODE'))}: EGA15</h3>
+                            <div className="coupon_desc">{(t('15% discount for orders with a minimum value of 500k. Discount code 100K max'))}</div>
 
                         </div>
                         <div className="d-flex align-items-center flex-wrap justify-content-between">
                             <button className="btn btn-main btn-sm coupon_copy" data-ega-coupon="EGA15" onClick={handleCopy}>
-                                <span>Sao chép</span></button>
+                                <span>{(t('Copy'))}</span></button>
                             <span className="coupon_info_toggle" data-coupon="EGA15">
-                                Điều kiện
+                            {(t('Conditions'))}
                             </span>
                             <div className="coupon_info">
                                 - Đơn hàng giá trị tối thiểu 250K. <br />
-                                - Chỉ áp dụng 1 mã giảm giá trên một đơn hàng. </div>
+                                {(t('Each customer can use a maximum of 1 time'))} </div>
 
                         </div>
                     </div>
@@ -64,20 +64,19 @@ const Coupon = () => {
                 <div className="coupon_item no-icon">
                     <div className="coupon_body">
                         <div className="coupon_head">
-                            <h3 className="coupon_title">NHẬP MÃ: EGA99K</h3>
-                            <div className="coupon_desc">Nhập mã EGA99K giảm ngay 99K </div>
+                            <h3 className="coupon_title">{(t('INSERT CODE'))}: EGA99K</h3>
+                            <div className="coupon_desc">{(t('Enter code EGA99K for instant discount of 99K'))} </div>
 
                         </div>
                         <div className="d-flex align-items-center flex-wrap justify-content-between">
                             <button className="btn btn-main btn-sm coupon_copy" data-ega-coupon="EGA99K" onClick={handleCopy}>
-                                <span>Sao chép</span></button>
+                                <span>{(t('Copy'))}</span></button>
                             <span className="coupon_info_toggle" data-coupon="EGA99K">
-                                Điều kiện
+                            {(t('Conditions'))}
                             </span>
                             <div className="coupon_info">
                                 - Đơn hàng từ 1000K.<br />
-                                - Chỉ áp dụng 1 mã giảm giá trên một đơn hàng. </div>
-
+                                {(t('Each customer can use a maximum of 1 time'))} </div>
                         </div>
                     </div>
                 </div>
@@ -89,20 +88,19 @@ const Coupon = () => {
                 <div className="coupon_item no-icon">
                     <div className="coupon_body">
                         <div className="coupon_head">
-                            <h3 className="coupon_title">NHẬP MÃ: FREESHIP</h3>
-                            <div className="coupon_desc">Nhập mã FREESHIP miễn phí vận chuyển </div>
+                            <h3 className="coupon_title">{(t('INSERT CODE'))}: FREESHIP</h3>
+                            <div className="coupon_desc">{(t('Enter code FREESHIP for free shipping'))} </div>
 
                         </div>
                         <div className="d-flex align-items-center flex-wrap justify-content-between">
                             <button className="btn btn-main btn-sm coupon_copy" data-ega-coupon="FREESHIP" onClick={handleCopy}>
-                                <span>Sao chép</span></button>
+                                <span>{(t('Copy'))}</span></button>
                             <span className="coupon_info_toggle" data-coupon="FREESHIP">
-                                Điều kiện
+                            {(t('Conditions'))}
                             </span>
                             <div className="coupon_info">
                                 - Đơn hàng từ 500K <br />
-                                - Áp dụng cho khu vực Tp.HCM </div>
-
+                                {(t('Each customer can use a maximum of 1 time'))} </div>
                         </div>
                     </div>
                 </div>
